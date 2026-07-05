@@ -1,16 +1,13 @@
 import { Controller } from '@hotwired/stimulus';
 
 /*
- * This is an example Stimulus controller!
- *
- * Any element with a data-controller="hello" attribute will cause
- * this controller to be executed. The name "hello" comes from the filename:
- * hello_controller.js -> "hello"
- *
- * Delete this file or adapt it for your use!
+ * Island Stimulus (AD-8) : hydraté côté client sur tout élément
+ * portant data-controller="hello". Le marqueur data-hydrated sert de
+ * preuve déterministe d'hydratation (voir HomeIslandHydrationTest).
  */
 export default class extends Controller {
     connect() {
-        this.element.textContent = 'Hello Stimulus! Edit me in assets/controllers/hello_controller.js';
+        this.element.textContent = 'JS hydraté ✓';
+        this.element.dataset.hydrated = 'true';
     }
 }

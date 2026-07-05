@@ -15,6 +15,10 @@
         <ini name="error_reporting" value="-1" />
         <server name="APP_ENV" value="test" force="true" />
         <server name="SHELL_VERBOSITY" value="-1" />
+        <!-- Panther boote son serveur web dédié : on le force sur l'env "test"
+             (App\Kernel::getAllowedEnvs() n'autorise pas l'env "panther" écrit
+             par défaut dans .env.test). Le chromedriver est auto-détecté dans ./drivers. -->
+        <server name="PANTHER_APP_ENV" value="test" />
     </php>
 
     <testsuites>
@@ -40,5 +44,6 @@
     </source>
 
     <extensions>
+        <bootstrap class="Symfony\Component\Panther\ServerExtension" />
     </extensions>
 </phpunit>
