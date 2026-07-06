@@ -1,0 +1,33 @@
+{
+  "attribution": {
+    "commit": "",
+    "pr": ""
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/no-claude-attribution.sh\"",
+            "if": "Bash(git commit*)",
+            "statusMessage": "Vérification attribution commit…"
+          },
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/no-claude-attribution.sh\"",
+            "if": "Bash(gh pr *)",
+            "statusMessage": "Vérification attribution PR…"
+          },
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/branch-naming.sh\"",
+            "if": "Bash(git *)",
+            "statusMessage": "Vérification nommage de branche…"
+          }
+        ]
+      }
+    ]
+  }
+}

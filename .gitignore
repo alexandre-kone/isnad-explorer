@@ -18,3 +18,6 @@
 /public/assets/
 /assets/vendor/
 ###< symfony/asset-mapper ###
+
+# Réglages Claude Code personnels (le settings.json partagé est versionné)
+/.claude/settings.local.json
