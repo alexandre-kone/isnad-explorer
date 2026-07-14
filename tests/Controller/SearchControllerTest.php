@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Controller;
 
+use App\Repository\HadithRepository;
 use App\Tests\PreparesHadithDatabase;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
@@ -50,5 +51,34 @@ final class SearchControllerTest extends WebTestCase
 
         self::assertResponseIsSuccessful();
         self::assertSelectorExists('[data-testid="no-results"]');
+    }
+
+    /**
+     * La limite s'applique aux hadiths (pas aux lignes jointes de l'isnad) : un
+     * hadith renvoyé conserve sa chaîne complète, même avec limit = 1 alors que
+     * plusieurs hadiths correspondent.
+     */
+    public function testLimitCountsHadithsAndKeepsFullIsnad(): void
+    {
+        $repository = static::getContainer()->get(HadithRepository::class);
+
+        // « que » correspond à Bukhari 1, 13 et 6018 ; Bukhari 1 (isnad de 6
+        // narrateurs) arrive en tête du tri par référence.
+        $results = $repository->searchByMatn('que', 1);
+
+        self::assertCount(1, $results);
+        self::assertSame('Sahih al-Bukhari 1', $results[0]->getReference());
+        self::assertCount(6, $results[0]->getIsnad());
+    }
+
+    /**
+     * Les métacaractères LIKE saisis sont traités littéralement : « % » ne
+     * matche pas tout.
+     */
+    public function testLikeWildcardIsTreatedLiterally(): void
+    {
+        $repository = static::getContainer()->get(HadithRepository::class);
+
+        self::assertSame([], $repository->searchByMatn('%', 20));
     }
 }

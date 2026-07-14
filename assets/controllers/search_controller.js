@@ -10,10 +10,10 @@ export default class extends Controller {
     static targets = ['input', 'clear'];
 
     connect() {
-        this.toggleClear();
         this.element.dataset.hydrated = 'true';
     }
 
+    // Fixe l'état initial du bouton dès que le champ est disponible.
     inputTargetConnected() {
         this.toggleClear();
     }
