@@ -1,0 +1,7 @@
+# Test : base SQLite dédiée et hermétique (aucune dépendance externe), pour que
+# `vendor/bin/phpunit` reste vert sans serveur de base de données.
+doctrine:
+    dbal:
+        url: 'sqlite:///%kernel.project_dir%/var/data_test.db'
+        dbname_suffix: ~
+        server_version: ~

@@ -1,0 +1,59 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Recherche de hadith — Isnad Explorer{% endblock %}
+
+{% block body %}
+	<main style="font-family: system-ui, sans-serif; max-width: 48rem; margin: 3rem auto; padding: 0 1rem; color: #14503b;">
+		<h1 style="color: #b08d3f;">Recherche de hadith</h1>
+		<p>Recherchez un hadith par son texte (matn) et explorez son isnad.</p>
+
+		{# Îlot Stimulus (AD-8) : le contrôleur « search » enrichit le champ (bouton effacer). #}
+		<form method="get" action="{{ path('search') }}" role="search"
+			data-controller="search"
+			style="display: flex; gap: 0.5rem; margin: 1.5rem 0;">
+			<input type="search" name="q" value="{{ query }}"
+				data-search-target="input"
+				data-action="input->search#toggleClear"
+				placeholder="ex. intention, voisin, prière…"
+				aria-label="Texte du hadith"
+				style="flex: 1; padding: 0.6rem 0.8rem; border: 1px solid #b08d3f; border-radius: 0.4rem; font-size: 1rem;">
+			<button type="button" data-search-target="clear" data-action="search#clear" hidden
+				style="padding: 0.6rem 0.9rem; border: 1px solid #b08d3f; background: #fff; color: #14503b; border-radius: 0.4rem; cursor: pointer;">
+				Effacer
+			</button>
+			<button type="submit"
+				style="padding: 0.6rem 1.1rem; border: 0; background: #14503b; color: #fff; border-radius: 0.4rem; cursor: pointer;">
+				Rechercher
+			</button>
+		</form>
+
+		{% if query is empty %}
+			<p style="color: #6b7280;">Saisissez un terme pour lancer la recherche.</p>
+		{% elseif results is empty %}
+			<p data-testid="no-results">Aucun hadith ne correspond à « <strong>{{ query }}</strong> ».</p>
+		{% else %}
+			<p data-testid="result-count">{{ results|length }} résultat(s) pour « <strong>{{ query }}</strong> ».</p>
+
+			<ul style="list-style: none; padding: 0; display: grid; gap: 1.5rem;">
+				{% for hadith in results %}
+					<li style="border: 1px solid #e5e7eb; border-radius: 0.6rem; padding: 1.2rem;">
+						<p style="font-size: 0.85rem; color: #b08d3f; font-weight: 600; margin: 0 0 0.5rem;">{{ hadith.reference }}</p>
+						<blockquote style="margin: 0 0 1rem; font-size: 1.1rem; line-height: 1.6;">{{ hadith.matn }}</blockquote>
+
+						<div>
+							<p style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; color: #6b7280; margin: 0 0 0.4rem;">Isnad</p>
+							<ol style="list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 0.4rem; align-items: center;">
+								{% for narrator in hadith.isnad %}
+									<li style="display: flex; align-items: center; gap: 0.4rem;">
+										<span style="background: #f0f7f4; border: 1px solid #cfe3da; border-radius: 999px; padding: 0.2rem 0.7rem; font-size: 0.9rem;">{{ narrator.name }}</span>
+										{% if not loop.last %}<span aria-hidden="true" style="color: #b08d3f;">→</span>{% endif %}
+									</li>
+								{% endfor %}
+							</ol>
+						</div>
+					</li>
+				{% endfor %}
+			</ul>
+		{% endif %}
+	</main>
+{% endblock %}

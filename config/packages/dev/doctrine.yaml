@@ -1,0 +1,7 @@
+# Dev : base SQLite locale, sans dépendance à un serveur Postgres/docker.
+# La prod reste sur Postgres via DATABASE_URL (voir config/packages/doctrine.yaml).
+doctrine:
+    dbal:
+        url: 'sqlite:///%kernel.project_dir%/var/data_dev.db'
+        # Neutralise le server_version Postgres hérité de la config de base.
+        server_version: ~
