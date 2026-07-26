@@ -29,10 +29,10 @@ final class SearchControllerTest extends WebTestCase
         self::assertResponseIsSuccessful();
         // Le matn recherché est rendu…
         self::assertSelectorTextContains('blockquote', 'Les actes ne valent que par les intentions');
-        // …avec sa référence et son isnad ordonné (Compagnon → maître du compilateur).
-        self::assertSelectorTextContains('body', 'Sahih al-Bukhari 1');
-        self::assertSelectorTextContains('body', 'Umar ibn al-Khattab');
-        self::assertSelectorTextContains('body', 'Abdullah ibn al-Zubayr al-Humaydi');
+        // …avec sa référence et son épine gharîb, du Prophète ﷺ jusqu'au pivot.
+        self::assertSelectorTextContains('body', 'Sahîh al-Bukhârî, n°1');
+        self::assertSelectorTextContains('body', 'ʿUmar ibn al-Khattâb');
+        self::assertSelectorTextContains('body', 'Yahyâ ibn Saʿîd al-Ansârî');
         self::assertSelectorExists('[data-testid="result-count"]');
     }
 
@@ -54,21 +54,23 @@ final class SearchControllerTest extends WebTestCase
     }
 
     /**
-     * La limite s'applique aux hadiths (pas aux lignes jointes de l'isnad) : un
-     * hadith renvoyé conserve sa chaîne complète, même avec limit = 1 alors que
-     * plusieurs hadiths correspondent.
+     * La limite s'applique aux hadiths (pas aux arêtes jointes du graphe) : un
+     * hadith renvoyé conserve l'intégralité de sa transmission, même avec
+     * limit = 1 alors que plusieurs hadiths correspondent.
      */
-    public function testLimitCountsHadithsAndKeepsFullIsnad(): void
+    public function testLimitCountsHadithsAndKeepsFullGraph(): void
     {
         $repository = static::getContainer()->get(HadithRepository::class);
 
-        // « que » correspond à Bukhari 1, 13 et 6018 ; Bukhari 1 (isnad de 6
-        // narrateurs) arrive en tête du tri par référence.
-        $results = $repository->searchByMatn('que', 1);
+        // « isl » correspond à plusieurs hadiths (îmân, ihsân…).
+        self::assertGreaterThan(1, \count($repository->searchByMatn('isl', 20)));
+
+        $results = $repository->searchByMatn('isl', 1);
 
         self::assertCount(1, $results);
-        self::assertSame('Sahih al-Bukhari 1', $results[0]->getReference());
-        self::assertCount(6, $results[0]->getIsnad());
+        // Le graphe du hadith retenu est complet, pas tronqué par la limite.
+        self::assertGreaterThan(1, $results[0]->getTransmissions()->count());
+        self::assertNotEmpty($results[0]->getSpine());
     }
 
     /**

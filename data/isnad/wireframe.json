@@ -1,0 +1,1319 @@
+{
+  "periods": {
+    "prophete": {
+      "fr": "Prophète",
+      "ar": "النبوة",
+      "color": "#13503b",
+      "order": 0
+    },
+    "sahaba": {
+      "fr": "Compagnon · Sahâbî",
+      "ar": "الصحابة",
+      "color": "#2f6e54",
+      "order": 1
+    },
+    "tabiin": {
+      "fr": "Successeur · Tâbiʿî",
+      "ar": "التابعون",
+      "color": "#6f7e3a",
+      "order": 2
+    },
+    "atba": {
+      "fr": "Suiveur · Atbâʿ",
+      "ar": "أتباع التابعين",
+      "color": "#a07d33",
+      "order": 3
+    },
+    "collecteur": {
+      "fr": "Collecteur",
+      "ar": "المُخرِّج",
+      "color": "#b08d3f",
+      "order": 4
+    }
+  },
+  "hadiths": {
+    "intention": {
+      "key": "intention",
+      "label": "Hadith de l'intention",
+      "fr": "Les actes ne valent que par les intentions",
+      "ar": "إِنَّمَا الأَعْمَالُ بِالنِّيَّاتِ",
+      "ref": "Sahîh al-Bukhârî, n°1",
+      "grade": "Sahîh",
+      "theme": "Sincérité · Niyya",
+      "pivot": "yahya",
+      "turuq": "6 voies (turuq)",
+      "intro": "Une seule voie (gharîb) du Prophète ﷺ jusqu'au pivot Yahyâ ibn Saʿîd al-Ansârî, puis l'isnad s'évente vers ses élèves et les grands recueils.",
+      "rawis": {
+        "prophet": {
+          "lvl": 0,
+          "name": "Le Prophète Muhammad ﷺ",
+          "ar": "النبي محمد ﷺ",
+          "gen": "prophete",
+          "meta": "La source · ≈ 11 AH / 632 EC",
+          "region": "La Mecque · Médine",
+          "bio": "L'origine de toute transmission : la parole prophétique d'où part l'isnad.",
+          "down": "ʿUmar ibn al-Khattâb"
+        },
+        "umar": {
+          "lvl": 1,
+          "name": "ʿUmar ibn al-Khattâb",
+          "ar": "عمر بن الخطاب",
+          "gen": "sahaba",
+          "meta": "Compagnon · d. 23 AH",
+          "region": "Médine",
+          "role": "2ᵉ calife bien-guidé",
+          "bio": "Seul compagnon à rapporter ce hadith — ce qui le rend gharîb (singulier) à sa source.",
+          "up": "Le Prophète ﷺ",
+          "down": "ʿAlqama ibn Waqqâs"
+        },
+        "alqama": {
+          "lvl": 2,
+          "name": "ʿAlqama ibn Waqqâs al-Laythî",
+          "ar": "علقمة بن وقاص الليثي",
+          "gen": "tabiin",
+          "meta": "Successeur · Médine",
+          "region": "Médine",
+          "bio": "Tâbiʿî médinois, unique transmetteur depuis ʿUmar pour cette voie.",
+          "up": "ʿUmar ibn al-Khattâb",
+          "down": "Muhammad ibn Ibrâhîm"
+        },
+        "ibnIbrahim": {
+          "lvl": 3,
+          "name": "Muhammad ibn Ibrâhîm al-Taymî",
+          "ar": "محمد بن إبراهيم التيمي",
+          "gen": "tabiin",
+          "meta": "Successeur · Médine · d. 120 AH",
+          "region": "Médine",
+          "bio": "Maillon médinois reliant ʿAlqama au pivot Yahyâ ibn Saʿîd.",
+          "up": "ʿAlqama ibn Waqqâs",
+          "down": "Yahyâ ibn Saʿîd al-Ansârî"
+        },
+        "yahya": {
+          "lvl": 4,
+          "name": "Yahyâ ibn Saʿîd al-Ansârî",
+          "ar": "يحيى بن سعيد الأنصاري",
+          "gen": "tabiin",
+          "meta": "PIVOT · Qâdî · d. 143 AH",
+          "region": "Médine · Koufa",
+          "role": "Qâdî · grand Tâbiʿî",
+          "pivot": true,
+          "chains": "64",
+          "bio": "Le مدار (point de convergence) : toute la transmission passe par lui. Au-dessus, l'isnad — jusque-là unique — s'évente vers des dizaines d'élèves.",
+          "up": "Muhammad ibn Ibrâhîm",
+          "down": "Mâlik, Sufyân, al-Qattân, Hammâd, al-Layth…"
+        },
+        "sufyan": {
+          "lvl": 5,
+          "name": "Sufyân ibn ʿUyayna",
+          "ar": "سفيان بن عيينة",
+          "gen": "atba",
+          "meta": "La Mecque · d. 198 AH",
+          "region": "La Mecque",
+          "role": "Hâfiz mecquois",
+          "bio": "Précision réputée ; transmet à al-Humaydî et à Ahmad ibn Hanbal.",
+          "up": "Yahyâ ibn Saʿîd",
+          "down": "al-Humaydî, Ahmad ibn Hanbal"
+        },
+        "malik": {
+          "lvl": 5,
+          "name": "Mâlik ibn Anas",
+          "ar": "مالك بن أنس",
+          "gen": "atba",
+          "meta": "Imam de Médine · d. 179 AH",
+          "region": "Médine",
+          "role": "Imam, auteur du Muwattaʾ",
+          "bio": "L'imam de Médine ; ses voies passent par al-Qaʿnabî et Yahyâ al-Tamîmî.",
+          "up": "Yahyâ ibn Saʿîd",
+          "down": "al-Qaʿnabî, Yahyâ al-Tamîmî"
+        },
+        "qattan": {
+          "lvl": 5,
+          "name": "Yahyâ al-Qattân",
+          "ar": "يحيى القطان",
+          "gen": "atba",
+          "meta": "Bassora · d. 198 AH",
+          "region": "Bassora",
+          "role": "Critique du hadith",
+          "bio": "Grand critique bassorien ; transmet à Musaddad.",
+          "up": "Yahyâ ibn Saʿîd",
+          "down": "Musaddad"
+        },
+        "hammad": {
+          "lvl": 5,
+          "name": "Hammâd ibn Zayd",
+          "ar": "حماد بن زيد",
+          "gen": "atba",
+          "meta": "Bassora · d. 179 AH",
+          "region": "Bassora",
+          "bio": "Imam bassorien ; sa voie rejoint Qutayba ibn Saʿîd.",
+          "up": "Yahyâ ibn Saʿîd",
+          "down": "Qutayba ibn Saʿîd"
+        },
+        "thaqafi": {
+          "lvl": 5,
+          "name": "ʿAbd al-Wahhâb al-Thaqafî",
+          "ar": "عبد الوهاب الثقفي",
+          "gen": "atba",
+          "meta": "Bassora · d. 194 AH",
+          "region": "Bassora",
+          "bio": "Transmetteur bassorien ; sa voie rejoint al-Qawârîrî.",
+          "up": "Yahyâ ibn Saʿîd",
+          "down": "al-Qawârîrî"
+        },
+        "layth": {
+          "lvl": 5,
+          "name": "al-Layth ibn Saʿd",
+          "ar": "الليث بن سعد",
+          "gen": "atba",
+          "meta": "Imam d'Égypte · d. 175 AH",
+          "region": "Fustât (Égypte)",
+          "role": "Imam d'Égypte",
+          "bio": "Faqîh et muhaddith d'Égypte ; transmet à Qutayba et à Ibn Rumh.",
+          "up": "Yahyâ ibn Saʿîd",
+          "down": "Qutayba, Ibn Rumh"
+        },
+        "humaydi": {
+          "lvl": 6,
+          "name": "ʿAbdullâh al-Humaydî",
+          "ar": "الحميدي",
+          "gen": "atba",
+          "meta": "La Mecque · d. 219 AH",
+          "region": "La Mecque",
+          "bio": "Maître direct d'al-Bukhârî ; premier nom du Sahîh.",
+          "up": "Sufyân ibn ʿUyayna",
+          "down": "al-Bukhârî"
+        },
+        "qanabi": {
+          "lvl": 6,
+          "name": "al-Qaʿnabî",
+          "ar": "القعنبي",
+          "gen": "atba",
+          "meta": "Bassora · d. 221 AH",
+          "region": "Bassora",
+          "bio": "Transmetteur du Muwattaʾ ; relie Mâlik à Bukhârî et Muslim.",
+          "up": "Mâlik ibn Anas",
+          "down": "al-Bukhârî, Muslim"
+        },
+        "yahyaTamimi": {
+          "lvl": 6,
+          "name": "Yahyâ ibn Yahyâ al-Tamîmî",
+          "ar": "يحيى بن يحيى التميمي",
+          "gen": "atba",
+          "meta": "Nîchâpour · d. 226 AH",
+          "region": "Nîchâpour",
+          "bio": "Transmet le Muwattaʾ ; ouvre le Sahîh de Muslim.",
+          "up": "Mâlik ibn Anas",
+          "down": "Muslim"
+        },
+        "musaddad": {
+          "lvl": 6,
+          "name": "Musaddad ibn Musarhad",
+          "ar": "مسدد بن مسرهد",
+          "gen": "atba",
+          "meta": "Bassora · d. 228 AH",
+          "region": "Bassora",
+          "bio": "Maître de Bukhârî et d'Abû Dâwûd.",
+          "up": "Yahyâ al-Qattân",
+          "down": "al-Bukhârî, Abû Dâwûd"
+        },
+        "qutayba": {
+          "lvl": 6,
+          "name": "Qutayba ibn Saʿîd",
+          "ar": "قتيبة بن سعيد",
+          "gen": "atba",
+          "meta": "Balkh · d. 240 AH",
+          "region": "Balkh",
+          "bio": "Voyageur infatigable ; maître de Muslim, Tirmidhî, Nasâʾî.",
+          "up": "Hammâd, al-Layth",
+          "down": "Muslim, al-Tirmidhî, al-Nasâʾî"
+        },
+        "qawariri": {
+          "lvl": 6,
+          "name": "al-Qawârîrî",
+          "ar": "القواريري",
+          "gen": "atba",
+          "meta": "Bassora · Bagdad · d. 235 AH",
+          "region": "Bagdad",
+          "bio": "Hâfiz bagdadien ; sa voie rejoint Muslim.",
+          "up": "al-Thaqafî",
+          "down": "Muslim"
+        },
+        "ibnRumh": {
+          "lvl": 6,
+          "name": "Muhammad ibn Rumh",
+          "ar": "محمد بن رمح",
+          "gen": "atba",
+          "meta": "Égypte · d. 242 AH",
+          "region": "Fustât (Égypte)",
+          "bio": "Transmetteur égyptien de al-Layth ; maître de Nasâʾî et Ibn Mâja.",
+          "up": "al-Layth ibn Saʿd",
+          "down": "al-Nasâʾî, Ibn Mâja"
+        },
+        "bukhari": {
+          "lvl": 7,
+          "name": "al-Bukhârî",
+          "ar": "البخاري",
+          "gen": "collecteur",
+          "meta": "d. 256 AH · Boukhara",
+          "region": "Boukhara",
+          "work": "Sahîh al-Bukhârî, n°1",
+          "bio": "Place ce hadith en ouverture de son Sahîh, par Humaydî → Sufyân → Yahyâ.",
+          "up": "al-Humaydî, al-Qaʿnabî, Musaddad"
+        },
+        "muslim": {
+          "lvl": 7,
+          "name": "Muslim",
+          "ar": "مسلم",
+          "gen": "collecteur",
+          "meta": "d. 261 AH · Nîchâpour",
+          "region": "Nîchâpour",
+          "work": "Sahîh Muslim",
+          "bio": "Rapporte le hadith par plusieurs voies remontant à Yahyâ.",
+          "up": "al-Qaʿnabî, Qutayba, Yahyâ al-Tamîmî, al-Qawârîrî"
+        },
+        "abudawud": {
+          "lvl": 7,
+          "name": "Abû Dâwûd",
+          "ar": "أبو داود",
+          "gen": "collecteur",
+          "meta": "d. 275 AH · Bassora",
+          "region": "Bassora",
+          "work": "Sunan Abî Dâwûd",
+          "bio": "Le retient dans ses Sunan via Musaddad.",
+          "up": "Musaddad"
+        },
+        "tirmidhi": {
+          "lvl": 7,
+          "name": "al-Tirmidhî",
+          "ar": "الترمذي",
+          "gen": "collecteur",
+          "meta": "d. 279 AH · Tirmidh",
+          "region": "Tirmidh",
+          "work": "Jâmiʿ al-Tirmidhî",
+          "bio": "Le rapporte dans son Jâmiʿ par Qutayba.",
+          "up": "Qutayba ibn Saʿîd"
+        },
+        "nasai": {
+          "lvl": 7,
+          "name": "al-Nasâʾî",
+          "ar": "النسائي",
+          "gen": "collecteur",
+          "meta": "d. 303 AH · Nasâ",
+          "region": "Nasâ",
+          "work": "al-Sunan al-Sughrâ",
+          "bio": "Le rapporte par Qutayba et Ibn Rumh.",
+          "up": "Qutayba, Ibn Rumh"
+        },
+        "ibnmaja": {
+          "lvl": 7,
+          "name": "Ibn Mâja",
+          "ar": "ابن ماجه",
+          "gen": "collecteur",
+          "meta": "d. 273 AH · Qazwîn",
+          "region": "Qazwîn",
+          "work": "Sunan Ibn Mâja",
+          "bio": "Le retient dans ses Sunan via Ibn Rumh.",
+          "up": "Muhammad ibn Rumh"
+        },
+        "ahmad": {
+          "lvl": 7,
+          "name": "Ahmad ibn Hanbal",
+          "ar": "أحمد بن حنبل",
+          "gen": "collecteur",
+          "meta": "d. 241 AH · Bagdad",
+          "region": "Bagdad",
+          "work": "al-Musnad",
+          "bio": "Le consigne dans son Musnad via Sufyân ibn ʿUyayna.",
+          "up": "Sufyân ibn ʿUyayna"
+        }
+      },
+      "links": [
+        [
+          "prophet",
+          "umar",
+          true
+        ],
+        [
+          "umar",
+          "alqama",
+          true
+        ],
+        [
+          "alqama",
+          "ibnIbrahim",
+          true
+        ],
+        [
+          "ibnIbrahim",
+          "yahya",
+          true
+        ],
+        [
+          "yahya",
+          "sufyan"
+        ],
+        [
+          "yahya",
+          "malik"
+        ],
+        [
+          "yahya",
+          "qattan"
+        ],
+        [
+          "yahya",
+          "hammad"
+        ],
+        [
+          "yahya",
+          "thaqafi"
+        ],
+        [
+          "yahya",
+          "layth"
+        ],
+        [
+          "sufyan",
+          "humaydi"
+        ],
+        [
+          "sufyan",
+          "ahmad"
+        ],
+        [
+          "malik",
+          "qanabi"
+        ],
+        [
+          "malik",
+          "yahyaTamimi"
+        ],
+        [
+          "qattan",
+          "musaddad"
+        ],
+        [
+          "hammad",
+          "qutayba"
+        ],
+        [
+          "layth",
+          "qutayba"
+        ],
+        [
+          "layth",
+          "ibnRumh"
+        ],
+        [
+          "thaqafi",
+          "qawariri"
+        ],
+        [
+          "humaydi",
+          "bukhari"
+        ],
+        [
+          "qanabi",
+          "bukhari"
+        ],
+        [
+          "qanabi",
+          "muslim"
+        ],
+        [
+          "musaddad",
+          "bukhari"
+        ],
+        [
+          "musaddad",
+          "abudawud"
+        ],
+        [
+          "qutayba",
+          "muslim"
+        ],
+        [
+          "qutayba",
+          "tirmidhi"
+        ],
+        [
+          "qutayba",
+          "nasai"
+        ],
+        [
+          "yahyaTamimi",
+          "muslim"
+        ],
+        [
+          "qawariri",
+          "muslim"
+        ],
+        [
+          "ibnRumh",
+          "nasai"
+        ],
+        [
+          "ibnRumh",
+          "ibnmaja"
+        ]
+      ],
+      "ready": true
+    },
+    "iman": {
+      "key": "iman",
+      "label": "Les piliers de l'islam",
+      "fr": "L'islam est bâti sur cinq piliers",
+      "ar": "بُنِيَ الإِسلامُ عَلى خَمْسٍ",
+      "ref": "Sahîh al-Bukhârî, n°8 · Muslim, n°16",
+      "grade": "Sahîh",
+      "theme": "ʿAqîda · Fondements",
+      "pivot": "hanzala",
+      "turuq": "5 voies (turuq)",
+      "intro": "Rapporté par Ibn ʿUmar ; la voie reste unique jusqu'au pivot mecquois Hanzala ibn Abî Sufyân, puis s'évente vers les grands recueils.",
+      "rawis": {
+        "prophet": {
+          "lvl": 0,
+          "name": "Le Prophète Muhammad ﷺ",
+          "ar": "النبي محمد ﷺ",
+          "gen": "prophete",
+          "meta": "La source · ≈ 11 AH / 632 EC",
+          "region": "La Mecque · Médine",
+          "bio": "Énonce les cinq fondements de l'islam ; point de départ de l'isnad.",
+          "down": "ʿAbdullâh ibn ʿUmar"
+        },
+        "ibnUmar": {
+          "lvl": 1,
+          "name": "ʿAbdullâh ibn ʿUmar",
+          "ar": "عبد الله بن عمر",
+          "gen": "sahaba",
+          "meta": "Compagnon · d. 73 AH",
+          "region": "Médine",
+          "role": "Fils du 2ᵉ calife",
+          "bio": "Compagnon rapporteur ; l'un des plus prolifiques transmetteurs du hadith.",
+          "up": "Le Prophète ﷺ",
+          "down": "ʿIkrima ibn Khâlid"
+        },
+        "ikrima": {
+          "lvl": 2,
+          "name": "ʿIkrima ibn Khâlid al-Makhzûmî",
+          "ar": "عكرمة بن خالد المخزومي",
+          "gen": "tabiin",
+          "meta": "Successeur · La Mecque",
+          "region": "La Mecque",
+          "bio": "Tâbiʿî mecquois ; transmet d'Ibn ʿUmar vers le pivot Hanzala.",
+          "up": "ʿAbdullâh ibn ʿUmar",
+          "down": "Hanzala ibn Abî Sufyân"
+        },
+        "hanzala": {
+          "lvl": 3,
+          "name": "Hanzala ibn Abî Sufyân al-Jumahî",
+          "ar": "حنظلة بن أبي سفيان الجمحي",
+          "gen": "tabiin",
+          "meta": "PIVOT · La Mecque · d. 151 AH",
+          "region": "La Mecque",
+          "role": "Grand Tâbiʿî mecquois",
+          "pivot": true,
+          "chains": "18",
+          "bio": "Le مدار de cette voie : l'isnad, unique jusqu'à lui, s'évente ensuite vers les grands recueils.",
+          "up": "ʿIkrima ibn Khâlid",
+          "down": "al-Thawrî, Ibn al-Mubârak, al-Qattân, Ibn Numayr"
+        },
+        "thawri": {
+          "lvl": 4,
+          "name": "Sufyân al-Thawrî",
+          "ar": "سفيان الثوري",
+          "gen": "atba",
+          "meta": "Koufa · d. 161 AH",
+          "region": "Koufa",
+          "role": "Amîr al-muʾminîn fî-l-hadîth",
+          "bio": "Imam de Koufa ; transmet à ʿUbaydullâh ibn Mûsâ et Abû Nuʿaym.",
+          "up": "Hanzala ibn Abî Sufyân",
+          "down": "ʿUbaydullâh ibn Mûsâ, Abû Nuʿaym"
+        },
+        "ibnMubarak": {
+          "lvl": 4,
+          "name": "ʿAbdullâh ibn al-Mubârak",
+          "ar": "عبد الله بن المبارك",
+          "gen": "atba",
+          "meta": "Marw · d. 181 AH",
+          "region": "Khurâsân",
+          "role": "Imam, moujâhid",
+          "bio": "Hâfiz du Khurâsân ; sa voie rejoint Abû Bakr ibn Abî Shayba.",
+          "up": "Hanzala ibn Abî Sufyân",
+          "down": "Abû Bakr ibn Abî Shayba"
+        },
+        "qattan": {
+          "lvl": 4,
+          "name": "Yahyâ al-Qattân",
+          "ar": "يحيى القطان",
+          "gen": "atba",
+          "meta": "Bassora · d. 198 AH",
+          "region": "Bassora",
+          "role": "Critique du hadith",
+          "bio": "Maître critique de Bassora ; transmet à Qutayba ibn Saʿîd.",
+          "up": "Hanzala ibn Abî Sufyân",
+          "down": "Qutayba ibn Saʿîd"
+        },
+        "ibnNumayr": {
+          "lvl": 4,
+          "name": "ʿAbdullâh ibn Numayr",
+          "ar": "عبد الله بن نمير",
+          "gen": "atba",
+          "meta": "Koufa · d. 199 AH",
+          "region": "Koufa",
+          "bio": "Transmetteur koufien ; son fils Muhammad poursuit la voie vers Muslim.",
+          "up": "Hanzala ibn Abî Sufyân",
+          "down": "Muhammad ibn ʿAbdillâh ibn Numayr"
+        },
+        "ubaydMusa": {
+          "lvl": 5,
+          "name": "ʿUbaydullâh ibn Mûsâ",
+          "ar": "عبيد الله بن موسى",
+          "gen": "atba",
+          "meta": "Koufa · d. 213 AH",
+          "region": "Koufa",
+          "bio": "Maître direct d'al-Bukhârî.",
+          "up": "Sufyân al-Thawrî",
+          "down": "al-Bukhârî"
+        },
+        "abuNuaym": {
+          "lvl": 5,
+          "name": "Abû Nuʿaym al-Fadl ibn Dukayn",
+          "ar": "أبو نعيم الفضل بن دكين",
+          "gen": "atba",
+          "meta": "Koufa · d. 219 AH",
+          "region": "Koufa",
+          "bio": "Hâfiz koufien ; autre maître d'al-Bukhârî.",
+          "up": "Sufyân al-Thawrî",
+          "down": "al-Bukhârî"
+        },
+        "muhNumayr": {
+          "lvl": 5,
+          "name": "Muhammad ibn ʿAbdillâh ibn Numayr",
+          "ar": "محمد بن عبد الله بن نمير",
+          "gen": "atba",
+          "meta": "Koufa · d. 234 AH",
+          "region": "Koufa",
+          "bio": "Transmet de son père ; maître de Muslim.",
+          "up": "ʿAbdullâh ibn Numayr",
+          "down": "Muslim"
+        },
+        "abuBakrShayba": {
+          "lvl": 5,
+          "name": "Abû Bakr ibn Abî Shayba",
+          "ar": "أبو بكر بن أبي شيبة",
+          "gen": "atba",
+          "meta": "Koufa · d. 235 AH",
+          "region": "Koufa",
+          "role": "Auteur du Musannaf",
+          "bio": "Grand compilateur koufien ; maître de Muslim et d'Ibn Mâja.",
+          "up": "ʿAbdullâh ibn al-Mubârak",
+          "down": "Muslim, Ibn Mâja"
+        },
+        "qutayba": {
+          "lvl": 5,
+          "name": "Qutayba ibn Saʿîd",
+          "ar": "قتيبة بن سعيد",
+          "gen": "atba",
+          "meta": "Balkh · d. 240 AH",
+          "region": "Balkh",
+          "bio": "Voyageur infatigable ; maître de Tirmidhî et Nasâʾî.",
+          "up": "Yahyâ al-Qattân",
+          "down": "al-Tirmidhî, al-Nasâʾî"
+        },
+        "bukhari": {
+          "lvl": 6,
+          "name": "al-Bukhârî",
+          "ar": "البخاري",
+          "gen": "collecteur",
+          "meta": "d. 256 AH · Boukhara",
+          "region": "Boukhara",
+          "work": "Sahîh al-Bukhârî, n°8",
+          "bio": "Place le hadith des cinq piliers tôt dans son Sahîh.",
+          "up": "ʿUbaydullâh ibn Mûsâ, Abû Nuʿaym"
+        },
+        "muslim": {
+          "lvl": 6,
+          "name": "Muslim",
+          "ar": "مسلم",
+          "gen": "collecteur",
+          "meta": "d. 261 AH · Nîchâpour",
+          "region": "Nîchâpour",
+          "work": "Sahîh Muslim, n°16",
+          "bio": "Le rapporte par plusieurs voies koufiennes.",
+          "up": "Muhammad ibn Numayr, Abû Bakr ibn Abî Shayba"
+        },
+        "tirmidhi": {
+          "lvl": 6,
+          "name": "al-Tirmidhî",
+          "ar": "الترمذي",
+          "gen": "collecteur",
+          "meta": "d. 279 AH · Tirmidh",
+          "region": "Tirmidh",
+          "work": "Jâmiʿ al-Tirmidhî, n°2609",
+          "bio": "Le retient dans son Jâmiʿ via Qutayba.",
+          "up": "Qutayba ibn Saʿîd"
+        },
+        "nasai": {
+          "lvl": 6,
+          "name": "al-Nasâʾî",
+          "ar": "النسائي",
+          "gen": "collecteur",
+          "meta": "d. 303 AH · Nasâ",
+          "region": "Nasâ",
+          "work": "al-Sunan al-Sughrâ",
+          "bio": "Le rapporte par Qutayba.",
+          "up": "Qutayba ibn Saʿîd"
+        },
+        "ibnmaja": {
+          "lvl": 6,
+          "name": "Ibn Mâja",
+          "ar": "ابن ماجه",
+          "gen": "collecteur",
+          "meta": "d. 273 AH · Qazwîn",
+          "region": "Qazwîn",
+          "work": "Sunan Ibn Mâja, n°61",
+          "bio": "Le retient dans ses Sunan via Ibn Abî Shayba.",
+          "up": "Abû Bakr ibn Abî Shayba"
+        }
+      },
+      "links": [
+        [
+          "prophet",
+          "ibnUmar",
+          true
+        ],
+        [
+          "ibnUmar",
+          "ikrima",
+          true
+        ],
+        [
+          "ikrima",
+          "hanzala",
+          true
+        ],
+        [
+          "hanzala",
+          "thawri"
+        ],
+        [
+          "hanzala",
+          "ibnMubarak"
+        ],
+        [
+          "hanzala",
+          "qattan"
+        ],
+        [
+          "hanzala",
+          "ibnNumayr"
+        ],
+        [
+          "thawri",
+          "ubaydMusa"
+        ],
+        [
+          "thawri",
+          "abuNuaym"
+        ],
+        [
+          "ibnMubarak",
+          "abuBakrShayba"
+        ],
+        [
+          "qattan",
+          "qutayba"
+        ],
+        [
+          "ibnNumayr",
+          "muhNumayr"
+        ],
+        [
+          "ubaydMusa",
+          "bukhari"
+        ],
+        [
+          "abuNuaym",
+          "bukhari"
+        ],
+        [
+          "muhNumayr",
+          "muslim"
+        ],
+        [
+          "abuBakrShayba",
+          "muslim"
+        ],
+        [
+          "abuBakrShayba",
+          "ibnmaja"
+        ],
+        [
+          "qutayba",
+          "tirmidhi"
+        ],
+        [
+          "qutayba",
+          "nasai"
+        ]
+      ],
+      "ready": true
+    },
+    "ihsan": {
+      "key": "ihsan",
+      "label": "Hadith de Gabriel",
+      "fr": "L'islâm, l'îmân et l'ihsân expliqués à Gabriel",
+      "ar": "الإِسلامُ وَالإِيمَانُ وَالإِحْسَانُ",
+      "ref": "Sahîh Muslim, n°8 · Abû Dâwûd, n°4695",
+      "grade": "Sahîh",
+      "theme": "ʿAqîda · Ihsân",
+      "pivot": "ibnBuraydah",
+      "turuq": "5 voies (turuq)",
+      "intro": "Récit de ʿUmar transmis par son fils ; la chaîne converge sur ʿAbdullâh ibn Buraydah à Merv avant de se diffuser dans les recueils bassoriens.",
+      "rawis": {
+        "prophet": {
+          "lvl": 0,
+          "name": "Le Prophète Muhammad ﷺ",
+          "ar": "النبي محمد ﷺ",
+          "gen": "prophete",
+          "meta": "La source · ≈ 11 AH / 632 EC",
+          "region": "Médine",
+          "bio": "Répond à Gabriel sur l'islâm, l'îmân et l'ihsân devant ses compagnons.",
+          "down": "ʿUmar ibn al-Khattâb"
+        },
+        "umar": {
+          "lvl": 1,
+          "name": "ʿUmar ibn al-Khattâb",
+          "ar": "عمر بن الخطاب",
+          "gen": "sahaba",
+          "meta": "Compagnon · d. 23 AH",
+          "region": "Médine",
+          "role": "2ᵉ calife bien-guidé",
+          "bio": "Témoin de la scène ; rapporte le hadith à son fils ʿAbdullâh.",
+          "up": "Le Prophète ﷺ",
+          "down": "ʿAbdullâh ibn ʿUmar"
+        },
+        "ibnUmar": {
+          "lvl": 2,
+          "name": "ʿAbdullâh ibn ʿUmar",
+          "ar": "عبد الله بن عمر",
+          "gen": "sahaba",
+          "meta": "Compagnon · d. 73 AH",
+          "region": "Médine",
+          "bio": "Transmet le récit de son père vers Yahyâ ibn Yaʿmar.",
+          "up": "ʿUmar ibn al-Khattâb",
+          "down": "Yahyâ ibn Yaʿmar"
+        },
+        "yahyaYamar": {
+          "lvl": 3,
+          "name": "Yahyâ ibn Yaʿmar",
+          "ar": "يحيى بن يعمر",
+          "gen": "tabiin",
+          "meta": "Successeur · Merv · d. ≈ 129 AH",
+          "region": "Bassora · Khurâsân",
+          "bio": "Tâbiʿî et grammairien ; reçoit le hadith d'Ibn ʿUmar.",
+          "up": "ʿAbdullâh ibn ʿUmar",
+          "down": "ʿAbdullâh ibn Buraydah"
+        },
+        "ibnBuraydah": {
+          "lvl": 4,
+          "name": "ʿAbdullâh ibn Buraydah",
+          "ar": "عبد الله بن بريدة",
+          "gen": "tabiin",
+          "meta": "PIVOT · Merv · d. 115 AH",
+          "region": "Khurâsân",
+          "role": "Qâdî de Merv",
+          "pivot": true,
+          "chains": "12",
+          "bio": "Le مدار : les voies bassoriennes du Hadith de Gabriel convergent par lui.",
+          "up": "Yahyâ ibn Yaʿmar",
+          "down": "Kahmas, Husayn al-Muʿallim, Matar al-Warrâq"
+        },
+        "kahmas": {
+          "lvl": 5,
+          "name": "Kahmas ibn al-Hasan",
+          "ar": "كهمس بن الحسن",
+          "gen": "atba",
+          "meta": "Bassora · d. 149 AH",
+          "region": "Bassora",
+          "bio": "Voie principale de Muslim ; transmet à Muʿâdh al-ʿAnbarî.",
+          "up": "ʿAbdullâh ibn Buraydah",
+          "down": "Muʿâdh ibn Muʿâdh"
+        },
+        "husayn": {
+          "lvl": 5,
+          "name": "Husayn al-Muʿallim",
+          "ar": "حسين المعلم",
+          "gen": "atba",
+          "meta": "Bassora · d. 145 AH",
+          "region": "Bassora",
+          "bio": "Transmetteur bassorien ; sa voie rejoint ʿAbd al-Wârith.",
+          "up": "ʿAbdullâh ibn Buraydah",
+          "down": "ʿAbd al-Wârith ibn Saʿîd"
+        },
+        "matar": {
+          "lvl": 5,
+          "name": "Matar al-Warrâq",
+          "ar": "مطر الوراق",
+          "gen": "atba",
+          "meta": "Bassora · d. 125 AH",
+          "region": "Bassora",
+          "bio": "Sa voie passe par Hammâd ibn Zayd.",
+          "up": "ʿAbdullâh ibn Buraydah",
+          "down": "Hammâd ibn Zayd"
+        },
+        "muadh": {
+          "lvl": 6,
+          "name": "Muʿâdh ibn Muʿâdh al-ʿAnbarî",
+          "ar": "معاذ بن معاذ العنبري",
+          "gen": "atba",
+          "meta": "Bassora · d. 196 AH",
+          "region": "Bassora",
+          "role": "Qâdî de Bassora",
+          "bio": "Son fils ʿUbaydullâh le transmet à Muslim.",
+          "up": "Kahmas ibn al-Hasan",
+          "down": "Muslim"
+        },
+        "abdulWarith": {
+          "lvl": 6,
+          "name": "ʿAbd al-Wârith ibn Saʿîd",
+          "ar": "عبد الوارث بن سعيد",
+          "gen": "atba",
+          "meta": "Bassora · d. 180 AH",
+          "region": "Bassora",
+          "bio": "Transmet à Abû Dâwûd et al-Nasâʾî.",
+          "up": "Husayn al-Muʿallim",
+          "down": "Abû Dâwûd, al-Nasâʾî"
+        },
+        "hammadZayd": {
+          "lvl": 6,
+          "name": "Hammâd ibn Zayd",
+          "ar": "حماد بن زيد",
+          "gen": "atba",
+          "meta": "Bassora · d. 179 AH",
+          "region": "Bassora",
+          "role": "Imam de Bassora",
+          "bio": "Sa voie rejoint al-Tirmidhî et Ibn Mâja.",
+          "up": "Matar al-Warrâq",
+          "down": "al-Tirmidhî, Ibn Mâja"
+        },
+        "muslim": {
+          "lvl": 7,
+          "name": "Muslim",
+          "ar": "مسلم",
+          "gen": "collecteur",
+          "meta": "d. 261 AH · Nîchâpour",
+          "region": "Nîchâpour",
+          "work": "Sahîh Muslim, n°8",
+          "bio": "Ouvre son Sahîh par ce hadith, via Muʿâdh al-ʿAnbarî.",
+          "up": "Muʿâdh ibn Muʿâdh"
+        },
+        "abudawud": {
+          "lvl": 7,
+          "name": "Abû Dâwûd",
+          "ar": "أبو داود",
+          "gen": "collecteur",
+          "meta": "d. 275 AH · Bassora",
+          "region": "Bassora",
+          "work": "Sunan Abî Dâwûd, n°4695",
+          "bio": "Le retient dans ses Sunan via ʿAbd al-Wârith.",
+          "up": "ʿAbd al-Wârith ibn Saʿîd"
+        },
+        "tirmidhi": {
+          "lvl": 7,
+          "name": "al-Tirmidhî",
+          "ar": "الترمذي",
+          "gen": "collecteur",
+          "meta": "d. 279 AH · Tirmidh",
+          "region": "Tirmidh",
+          "work": "Jâmiʿ al-Tirmidhî, n°2610",
+          "bio": "Le rapporte via Hammâd ibn Zayd.",
+          "up": "Hammâd ibn Zayd"
+        },
+        "nasai": {
+          "lvl": 7,
+          "name": "al-Nasâʾî",
+          "ar": "النسائي",
+          "gen": "collecteur",
+          "meta": "d. 303 AH · Nasâ",
+          "region": "Nasâ",
+          "work": "al-Sunan al-Kubrâ",
+          "bio": "Le rapporte via ʿAbd al-Wârith.",
+          "up": "ʿAbd al-Wârith ibn Saʿîd"
+        },
+        "ibnmaja": {
+          "lvl": 7,
+          "name": "Ibn Mâja",
+          "ar": "ابن ماجه",
+          "gen": "collecteur",
+          "meta": "d. 273 AH · Qazwîn",
+          "region": "Qazwîn",
+          "work": "Sunan Ibn Mâja, n°63",
+          "bio": "Le retient dans ses Sunan via Hammâd ibn Zayd.",
+          "up": "Hammâd ibn Zayd"
+        }
+      },
+      "links": [
+        [
+          "prophet",
+          "umar",
+          true
+        ],
+        [
+          "umar",
+          "ibnUmar",
+          true
+        ],
+        [
+          "ibnUmar",
+          "yahyaYamar",
+          true
+        ],
+        [
+          "yahyaYamar",
+          "ibnBuraydah",
+          true
+        ],
+        [
+          "ibnBuraydah",
+          "kahmas"
+        ],
+        [
+          "ibnBuraydah",
+          "husayn"
+        ],
+        [
+          "ibnBuraydah",
+          "matar"
+        ],
+        [
+          "kahmas",
+          "muadh"
+        ],
+        [
+          "husayn",
+          "abdulWarith"
+        ],
+        [
+          "matar",
+          "hammadZayd"
+        ],
+        [
+          "muadh",
+          "muslim"
+        ],
+        [
+          "abdulWarith",
+          "abudawud"
+        ],
+        [
+          "abdulWarith",
+          "nasai"
+        ],
+        [
+          "hammadZayd",
+          "tirmidhi"
+        ],
+        [
+          "hammadZayd",
+          "ibnmaja"
+        ]
+      ],
+      "ready": true
+    },
+    "ukhuwwa": {
+      "key": "ukhuwwa",
+      "label": "Aimer pour son frère",
+      "fr": "Nul ne croit vraiment tant qu'il n'aime pour son frère ce qu'il aime pour lui-même",
+      "ar": "لا يُؤمِنُ أَحَدُكُمْ حَتّى يُحِبَّ لِأَخِيهِ مَا يُحِبُّ لِنَفْسِهِ",
+      "ref": "Sahîh al-Bukhârî, n°13 · Muslim, n°45",
+      "grade": "Sahîh",
+      "theme": "Akhlâq · Fraternité",
+      "pivot": "qatada",
+      "turuq": "5 voies (turuq)",
+      "intro": "Hadith mashhûr : rapporté par Anas, il s'évente très tôt à partir de Qatâda al-Sadûsî vers tous les grands recueils — l'inverse d'une voie gharîb.",
+      "rawis": {
+        "prophet": {
+          "lvl": 0,
+          "name": "Le Prophète Muhammad ﷺ",
+          "ar": "النبي محمد ﷺ",
+          "gen": "prophete",
+          "meta": "La source · ≈ 11 AH / 632 EC",
+          "region": "Médine",
+          "bio": "Lie la foi à l'amour désintéressé du prochain.",
+          "down": "Anas ibn Mâlik"
+        },
+        "anas": {
+          "lvl": 1,
+          "name": "Anas ibn Mâlik",
+          "ar": "أنس بن مالك",
+          "gen": "sahaba",
+          "meta": "Compagnon · d. 93 AH",
+          "region": "Bassora",
+          "role": "Serviteur du Prophète ﷺ",
+          "bio": "Servit le Prophète dix ans ; transmet à Qatâda.",
+          "up": "Le Prophète ﷺ",
+          "down": "Qatâda ibn Diʿâma"
+        },
+        "qatada": {
+          "lvl": 2,
+          "name": "Qatâda ibn Diʿâma al-Sadûsî",
+          "ar": "قتادة بن دعامة السدوسي",
+          "gen": "tabiin",
+          "meta": "PIVOT · Bassora · d. 117 AH",
+          "region": "Bassora",
+          "role": "Hâfiz, grand Tâbiʿî",
+          "pivot": true,
+          "chains": "15",
+          "bio": "Le مدار : ce hadith mashhûr s'évente très tôt à partir de lui — l'inverse d'une voie gharîb.",
+          "up": "Anas ibn Mâlik",
+          "down": "Shuʿba, Saʿîd ibn Abî ʿArûba, Hammâm ibn Yahyâ"
+        },
+        "shuba": {
+          "lvl": 3,
+          "name": "Shuʿba ibn al-Hajjâj",
+          "ar": "شعبة بن الحجاج",
+          "gen": "atba",
+          "meta": "Bassora · d. 160 AH",
+          "region": "Bassora",
+          "role": "Amîr al-muʾminîn fî-l-hadîth",
+          "bio": "Maître critique ; transmet à al-Qattân et à Ghundar.",
+          "up": "Qatâda ibn Diʿâma",
+          "down": "Yahyâ al-Qattân, Ibn Jaʿfar (Ghundar)"
+        },
+        "saidAruba": {
+          "lvl": 3,
+          "name": "Saʿîd ibn Abî ʿArûba",
+          "ar": "سعيد بن أبي عروبة",
+          "gen": "atba",
+          "meta": "Bassora · d. 156 AH",
+          "region": "Bassora",
+          "bio": "Premier compilateur des sunan ; sa voie passe par Ibn Abî ʿAdî.",
+          "up": "Qatâda ibn Diʿâma",
+          "down": "Ibn Abî ʿAdî"
+        },
+        "hammam": {
+          "lvl": 3,
+          "name": "Hammâm ibn Yahyâ",
+          "ar": "همام بن يحيى",
+          "gen": "atba",
+          "meta": "Bassora · d. 163 AH",
+          "region": "Bassora",
+          "bio": "Transmetteur fidèle de Qatâda ; sa voie rejoint Yazîd ibn Zurayʿ.",
+          "up": "Qatâda ibn Diʿâma",
+          "down": "Yazîd ibn Zurayʿ"
+        },
+        "qattan": {
+          "lvl": 4,
+          "name": "Yahyâ al-Qattân",
+          "ar": "يحيى القطان",
+          "gen": "atba",
+          "meta": "Bassora · d. 198 AH",
+          "region": "Bassora",
+          "bio": "Transmet à Musaddad, maître d'al-Bukhârî.",
+          "up": "Shuʿba ibn al-Hajjâj",
+          "down": "Musaddad ibn Musarhad"
+        },
+        "ibnJafar": {
+          "lvl": 4,
+          "name": "Muhammad ibn Jaʿfar (Ghundar)",
+          "ar": "محمد بن جعفر غندر",
+          "gen": "atba",
+          "meta": "Bassora · d. 193 AH",
+          "region": "Bassora",
+          "bio": "Spécialiste de Shuʿba ; transmet à Ibn al-Muthannâ.",
+          "up": "Shuʿba ibn al-Hajjâj",
+          "down": "Ibn al-Muthannâ"
+        },
+        "ibnAbiAdi": {
+          "lvl": 4,
+          "name": "Muhammad ibn Abî ʿAdî",
+          "ar": "محمد بن أبي عدي",
+          "gen": "atba",
+          "meta": "Bassora · d. 194 AH",
+          "region": "Bassora",
+          "bio": "Transmet à Muslim et à Ibn Mâja.",
+          "up": "Saʿîd ibn Abî ʿArûba",
+          "down": "Muslim, Ibn Mâja"
+        },
+        "yazidZuray": {
+          "lvl": 4,
+          "name": "Yazîd ibn Zurayʿ",
+          "ar": "يزيد بن زريع",
+          "gen": "atba",
+          "meta": "Bassora · d. 182 AH",
+          "region": "Bassora",
+          "bio": "Hâfiz bassorien ; sa voie rejoint Qutayba.",
+          "up": "Hammâm ibn Yahyâ",
+          "down": "Qutayba ibn Saʿîd"
+        },
+        "musaddad": {
+          "lvl": 5,
+          "name": "Musaddad ibn Musarhad",
+          "ar": "مسدد بن مسرهد",
+          "gen": "atba",
+          "meta": "Bassora · d. 228 AH",
+          "region": "Bassora",
+          "bio": "Maître direct d'al-Bukhârî.",
+          "up": "Yahyâ al-Qattân",
+          "down": "al-Bukhârî"
+        },
+        "ibnMuthanna": {
+          "lvl": 5,
+          "name": "Muhammad ibn al-Muthannâ",
+          "ar": "محمد بن المثنى",
+          "gen": "atba",
+          "meta": "Bassora · d. 252 AH",
+          "region": "Bassora",
+          "bio": "« al-Zaman » ; maître de Muslim.",
+          "up": "Muhammad ibn Jaʿfar",
+          "down": "Muslim"
+        },
+        "qutayba": {
+          "lvl": 5,
+          "name": "Qutayba ibn Saʿîd",
+          "ar": "قتيبة بن سعيد",
+          "gen": "atba",
+          "meta": "Balkh · d. 240 AH",
+          "region": "Balkh",
+          "bio": "Maître de Tirmidhî et Nasâʾî.",
+          "up": "Yazîd ibn Zurayʿ",
+          "down": "al-Tirmidhî, al-Nasâʾî"
+        },
+        "bukhari": {
+          "lvl": 6,
+          "name": "al-Bukhârî",
+          "ar": "البخاري",
+          "gen": "collecteur",
+          "meta": "d. 256 AH · Boukhara",
+          "region": "Boukhara",
+          "work": "Sahîh al-Bukhârî, n°13",
+          "bio": "Le place dans le Livre de la foi, via Musaddad.",
+          "up": "Musaddad ibn Musarhad"
+        },
+        "muslim": {
+          "lvl": 6,
+          "name": "Muslim",
+          "ar": "مسلم",
+          "gen": "collecteur",
+          "meta": "d. 261 AH · Nîchâpour",
+          "region": "Nîchâpour",
+          "work": "Sahîh Muslim, n°45",
+          "bio": "Le rapporte par Ibn al-Muthannâ et Ibn Abî ʿAdî.",
+          "up": "Ibn al-Muthannâ, Ibn Abî ʿAdî"
+        },
+        "tirmidhi": {
+          "lvl": 6,
+          "name": "al-Tirmidhî",
+          "ar": "الترمذي",
+          "gen": "collecteur",
+          "meta": "d. 279 AH · Tirmidh",
+          "region": "Tirmidh",
+          "work": "Jâmiʿ al-Tirmidhî, n°2515",
+          "bio": "Le rapporte via Qutayba.",
+          "up": "Qutayba ibn Saʿîd"
+        },
+        "nasai": {
+          "lvl": 6,
+          "name": "al-Nasâʾî",
+          "ar": "النسائي",
+          "gen": "collecteur",
+          "meta": "d. 303 AH · Nasâ",
+          "region": "Nasâ",
+          "work": "al-Sunan al-Sughrâ, n°5016",
+          "bio": "Le rapporte via Qutayba.",
+          "up": "Qutayba ibn Saʿîd"
+        },
+        "ibnmaja": {
+          "lvl": 6,
+          "name": "Ibn Mâja",
+          "ar": "ابن ماجه",
+          "gen": "collecteur",
+          "meta": "d. 273 AH · Qazwîn",
+          "region": "Qazwîn",
+          "work": "Sunan Ibn Mâja, n°66",
+          "bio": "Le retient dans ses Sunan via Ibn Abî ʿAdî.",
+          "up": "Muhammad ibn Abî ʿAdî"
+        }
+      },
+      "links": [
+        [
+          "prophet",
+          "anas",
+          true
+        ],
+        [
+          "anas",
+          "qatada",
+          true
+        ],
+        [
+          "qatada",
+          "shuba"
+        ],
+        [
+          "qatada",
+          "saidAruba"
+        ],
+        [
+          "qatada",
+          "hammam"
+        ],
+        [
+          "shuba",
+          "qattan"
+        ],
+        [
+          "shuba",
+          "ibnJafar"
+        ],
+        [
+          "saidAruba",
+          "ibnAbiAdi"
+        ],
+        [
+          "hammam",
+          "yazidZuray"
+        ],
+        [
+          "qattan",
+          "musaddad"
+        ],
+        [
+          "ibnJafar",
+          "ibnMuthanna"
+        ],
+        [
+          "yazidZuray",
+          "qutayba"
+        ],
+        [
+          "musaddad",
+          "bukhari"
+        ],
+        [
+          "ibnMuthanna",
+          "muslim"
+        ],
+        [
+          "ibnAbiAdi",
+          "muslim"
+        ],
+        [
+          "ibnAbiAdi",
+          "ibnmaja"
+        ],
+        [
+          "qutayba",
+          "tirmidhi"
+        ],
+        [
+          "qutayba",
+          "nasai"
+        ]
+      ],
+      "ready": true
+    }
+  }
+}

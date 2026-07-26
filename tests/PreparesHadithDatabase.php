@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests;
 
-use App\DataFixtures\HadithFixtures;
+use App\Domain\IsnadDatasetLoader;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Tools\SchemaTool;
 
@@ -30,7 +30,7 @@ trait PreparesHadithDatabase
         $tool = new SchemaTool($em);
         $tool->createSchema($em->getMetadataFactory()->getAllMetadata());
 
-        (new HadithFixtures())->load($em);
+        (new IsnadDatasetLoader(\dirname(__DIR__).'/data/isnad/wireframe.json'))->load($em);
         $em->clear();
     }
 }

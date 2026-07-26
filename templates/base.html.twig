@@ -1,24 +1,72 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="UTF-8">
-        <title>{% block title %}Welcome!{% endblock %}</title>
-        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
-        {% block stylesheets %}
-        {% endblock %}
+<html lang="fr">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>{% block title %}Isnad Explorer{% endblock %}</title>
+		<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><rect width=%22128%22 height=%22128%22 fill=%22%2314503b%22/><circle cx=%2264%22 cy=%2264%22 r=%2234%22 fill=%22none%22 stroke=%22%23b08d3f%22 stroke-width=%228%22/></svg>">
+		{% block stylesheets %}
+		{% endblock %}
 
-        {% block javascripts %}
-            {% block importmap %}{{ importmap('app') }}{% endblock %}
-        {% endblock %}
+		{% block javascripts %}
+			{% block importmap %}{{ importmap('app') }}{% endblock %}
+		{% endblock %}
 
-        {% set frankenphpHotReload = app.request.server.get('FRANKENPHP_HOT_RELOAD') %}
-        {% if frankenphpHotReload %}
-        <meta name="frankenphp-hot-reload:url" content="{{ frankenphpHotReload }}">
-        <script src="https://cdn.jsdelivr.net/npm/idiomorph"></script>
-        <script src="https://cdn.jsdelivr.net/npm/frankenphp-hot-reload/+esm" type="module"></script>
-        {% endif %}
-    </head>
-    <body>
-        {% block body %}{% endblock %}
-    </body>
+		{% set frankenphpHotReload = app.request.server.get('FRANKENPHP_HOT_RELOAD') %}
+		{% if frankenphpHotReload %}
+		<meta name="frankenphp-hot-reload:url" content="{{ frankenphpHotReload }}">
+		<script src="https://cdn.jsdelivr.net/npm/idiomorph"></script>
+		<script src="https://cdn.jsdelivr.net/npm/frankenphp-hot-reload/+esm" type="module"></script>
+		{% endif %}
+	</head>
+	{# body_attributes permet à une vue d'accrocher un îlot Stimulus qui couvre
+	   à la fois l'en-tête et le contenu (cas de la vue Réseau). #}
+	<body class="{% block body_class %}{% endblock %}"{% block body_attributes %}{% endblock %}>
+		<header>
+			<a class="brand" href="{{ path('home') }}">
+				<div class="medallion"><i></i><i></i><b></b></div>
+				<div>
+					<div class="brand-line">
+						<span class="wm ar">إسناد</span>
+						<h1>Isnad Explorer</h1>
+					</div>
+					<p>Cartographie des chaînes de transmission du Hadith</p>
+				</div>
+			</a>
+
+			<nav class="tabs">
+				<a class="tab {{ app.request.attributes.get('_route') == 'home' ? 'on' }}" href="{{ path('home') }}">Accueil</a>
+				<a class="tab {{ app.request.attributes.get('_route') == 'search' ? 'on' }}" href="{{ path('search') }}">Hadiths</a>
+				{# Vues du wireframe pas encore construites : visibles mais inertes. #}
+				<span class="tab soon" title="Vue à venir" aria-disabled="true">Chaîne</span>
+			</nav>
+
+			{#
+				La vue Réseau remplace ce champ par sa recherche de narrateur,
+				qui filtre le graphe côté client au lieu de soumettre un GET.
+			#}
+			{% block header_search %}
+				{#
+					Îlot Stimulus (AD-8) : le contrôleur « search » révèle le bouton
+					d'effacement une fois hydraté.
+				#}
+				<div class="searchwrap">
+					<form class="search" method="get" action="{{ path('search') }}" role="search"
+						data-controller="search">
+						<span class="mag" aria-hidden="true">⌕</span>
+						<input type="search" name="q" value="{{ query|default('') }}"
+							data-search-target="input"
+							data-action="input->search#toggleClear"
+							placeholder="Rechercher un hadith…"
+							aria-label="Texte du hadith">
+						<button type="button" data-search-target="clear" data-action="search#clear" hidden
+							title="Effacer" aria-label="Effacer">✕</button>
+						<button type="submit" title="Rechercher" aria-label="Rechercher">→</button>
+					</form>
+				</div>
+			{% endblock %}
+		</header>
+
+		{% block body %}{% endblock %}
+	</body>
 </html>

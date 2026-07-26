@@ -3,11 +3,29 @@
 {% block title %}Isnad Explorer{% endblock %}
 
 {% block body %}
-	<main style="font-family: system-ui, sans-serif; max-width: 40rem; margin: 4rem auto; padding: 0 1rem; color: #14503b;">
-		<h1 style="color: #b08d3f;">Isnad Explorer</h1>
-		<p>v2 en construction — {{ message }}</p>
-		{# Island Stimulus (AD-8) : preuve d'hydratation JS via AssetMapper #}
-		<p data-controller="hello">…</p>
-		<p><a href="{{ path('search') }}" style="color: #b08d3f; font-weight: 600;">Rechercher un hadith →</a></p>
+	<main class="page">
+		<div class="page-head">
+			<h2>Cartographie des chaînes de transmission</h2>
+			<p>v2 en construction — {{ message }}</p>
+		</div>
+
+		{# Îlot Stimulus (AD-8) : preuve d'hydratation JS via AssetMapper #}
+		<p class="hint" data-controller="hello">…</p>
+
+		<div class="card">
+			<div class="band">
+				<span class="ref">Explorer le corpus</span>
+				<span class="pb ar">إسناد</span>
+			</div>
+			<div class="cbody">
+				<p>
+					Recherchez un hadith par son texte (matn) et remontez sa chaîne de
+					transmission, du Compagnon jusqu'au maître du compilateur.
+				</p>
+				<p style="margin-top: 12px;">
+					<a class="gold-link" href="{{ path('search') }}">Rechercher un hadith →</a>
+				</p>
+			</div>
+		</div>
 	</main>
 {% endblock %}
