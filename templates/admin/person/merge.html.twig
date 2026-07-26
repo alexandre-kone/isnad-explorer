@@ -1,0 +1,37 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Fusion — curation{% endblock %}
+
+{% block body %}
+	<main class="page page-narrow">
+		<div class="page-head">
+			<h2>Fusionner deux fiches</h2>
+			<p>L'opération est irréversible : seul le journal permet de la reconstituer.</p>
+		</div>
+
+		<div class="card">
+			<div class="band"><span class="ref">Aperçu de l'impact</span></div>
+			<div class="cbody">
+				<p>
+					<strong>{{ absorbed.displayName ?? absorbed.slug }}</strong> sera absorbée dans
+					<strong>{{ kept.displayName ?? kept.slug }}</strong>, puis supprimée.
+				</p>
+
+				<ul class="impact" data-testid="merge-impact">
+					<li>{{ impact.names }} forme(s) de nom transférée(s)</li>
+					<li>{{ impact.participations }} participation(s) repointée(s)</li>
+					<li>{{ impact.transmissions }} arête(s) repointée(s)</li>
+					<li>{{ impact.pivots }} hadith(s) dont elle est le pivot</li>
+					{% if impact.collisions %}
+						<li class="warn">{{ impact.collisions }} arête(s) en collision seront fusionnées</li>
+					{% endif %}
+				</ul>
+
+				<form method="post">
+					<input type="hidden" name="_token" value="{{ csrf_token('merge' ~ absorbed.slug) }}">
+					<button class="pathbtn" type="submit">Confirmer la fusion</button>
+				</form>
+			</div>
+		</div>
+	</main>
+{% endblock %}

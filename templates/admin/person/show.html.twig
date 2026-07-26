@@ -1,0 +1,33 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ person.displayName ?? person.slug }} — curation{% endblock %}
+
+{% block body %}
+	<main class="page">
+		<div class="page-head">
+			<h2>{{ person.displayName ?? person.slug }}</h2>
+			<p>{{ person.period.labelFr }}{% if person.deathLabel %} · {{ person.deathLabel }}{% endif %}</p>
+		</div>
+
+		{% for message in app.flashes('success') %}
+			<p class="flash-success">{{ message }}</p>
+		{% endfor %}
+
+		<div class="card">
+			<div class="band">
+				<span class="ref">Formes du nom</span>
+				<span class="pb">{{ person.names|length }}</span>
+			</div>
+			<div class="cbody">
+				<ul class="name-list" data-testid="name-list">
+					{% for name in person.names %}
+						<li>
+							<span class="{{ name.script.value == 'ar' ? 'ar' }}">{{ name.form }}</span>
+							<span class="hint">{{ name.kind.label }} · {{ name.script.label }}{{ name.display ? ' · affichée' }}</span>
+						</li>
+					{% endfor %}
+				</ul>
+			</div>
+		</div>
+	</main>
+{% endblock %}

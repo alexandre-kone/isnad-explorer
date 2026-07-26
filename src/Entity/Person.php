@@ -4,8 +4,11 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Entity\Enum\NameScript;
 use App\Entity\Trait\Curated;
 use App\Repository\PersonRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -14,6 +17,9 @@ use Doctrine\ORM\Mapping as ORM;
  * La personne est dédupliquée et partagée par tous les hadiths : c'est ce qui
  * rendra possible, plus tard, les corrélations entre chaînes. Ce qui dépend du
  * hadith (niveau vertical, nombre de voies) vit dans {@see HadithParticipant}.
+ *
+ * Les libellés ne sont plus des colonnes : un homme porte plusieurs noms, tous
+ * dans {@see PersonName}. La fiche ne garde que l'identité et les faits.
  */
 #[ORM\Entity(repositoryClass: PersonRepository::class)]
 #[ORM\Table(name: 'person')]
@@ -30,12 +36,9 @@ class Person implements CuratedEntity
     #[ORM\Column(length: 64, unique: true)]
     private string $slug;
 
-    /** Nom translittéré, ex. « Yahyâ ibn Saʿîd al-Ansârî ». */
-    #[ORM\Column(length: 255)]
-    private string $name;
-
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $nameAr = null;
+    /** @var Collection<int, PersonName> */
+    #[ORM\OneToMany(targetEntity: PersonName::class, mappedBy: 'person', cascade: ['persist'], orphanRemoval: true)]
+    private Collection $names;
 
     #[ORM\ManyToOne(targetEntity: Period::class)]
     #[ORM\JoinColumn(nullable: false)]
@@ -58,11 +61,39 @@ class Person implements CuratedEntity
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $work = null;
 
-    public function __construct(string $slug, string $name, Period $period)
+    /**
+     * Dates hégiriennes en fourchettes : min = max signifie une date certaine,
+     * les deux nuls une date inconnue. Un entier unique forcerait une précision
+     * que les sources n'ont pas.
+     */
+    #[ORM\Column(nullable: true)]
+    private ?int $birthAhMin = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $birthAhMax = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $deathAhMin = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $deathAhMax = null;
+
+    /** Transmetteur connu pour dissimuler une rupture de chaîne (tadlīs). */
+    #[ORM\Column]
+    private bool $mudallis = false;
+
+    #[ORM\Column(length: 64, nullable: true)]
+    private ?string $tadlisType = null;
+
+    /** Rang de gravité d'Ibn Ḥajar, de 1 à 5. */
+    #[ORM\Column(nullable: true)]
+    private ?int $tadlisRank = null;
+
+    public function __construct(string $slug, Period $period)
     {
         $this->slug = $slug;
-        $this->name = $name;
         $this->period = $period;
+        $this->names = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -75,26 +106,66 @@ class Person implements CuratedEntity
         return $this->slug;
     }
 
-    public function getName(): string
+    /** @return Collection<int, PersonName> */
+    public function getNames(): Collection
     {
-        return $this->name;
+        return $this->names;
     }
 
-    public function getNameAr(): ?string
+    public function addName(PersonName $name): self
     {
-        return $this->nameAr;
-    }
-
-    public function setNameAr(?string $nameAr): self
-    {
-        $this->nameAr = $nameAr;
+        $this->names->add($name);
 
         return $this;
+    }
+
+    public function removeName(PersonName $name): self
+    {
+        $this->names->removeElement($name);
+
+        return $this;
+    }
+
+    /**
+     * Forme d'affichage pour une écriture donnée, avec repli sur la première
+     * forme connue de cette écriture.
+     */
+    public function getDisplayName(NameScript $script = NameScript::Latin): ?string
+    {
+        $fallback = null;
+
+        foreach ($this->names as $name) {
+            if ($name->getScript() !== $script) {
+                continue;
+            }
+            if ($name->isDisplay()) {
+                return $name->getForm();
+            }
+            $fallback ??= $name->getForm();
+        }
+
+        return $fallback;
+    }
+
+    /**
+     * Raccourci pour les gabarits : Twig ne sait pas construire une valeur
+     * d'énumération pour l'argument de getDisplayName().
+     */
+    public function getDisplayNameAr(): ?string
+    {
+        return $this->getDisplayName(NameScript::Arabic);
     }
 
     public function getPeriod(): Period
     {
         return $this->period;
+    }
+
+    public function setPeriod(Period $period): self
+    {
+        $this->period = $period;
+
+        return $this;
     }
 
     public function getMeta(): ?string
@@ -153,6 +224,93 @@ class Person implements CuratedEntity
     public function setWork(?string $work): self
     {
         $this->work = $work;
+
+        return $this;
+    }
+
+    public function getBirthAhMin(): ?int
+    {
+        return $this->birthAhMin;
+    }
+
+    public function getBirthAhMax(): ?int
+    {
+        return $this->birthAhMax;
+    }
+
+    public function setBirthAh(?int $min, ?int $max = null): self
+    {
+        $this->birthAhMin = $min;
+        $this->birthAhMax = $max ?? $min;
+
+        return $this;
+    }
+
+    public function getDeathAhMin(): ?int
+    {
+        return $this->deathAhMin;
+    }
+
+    public function getDeathAhMax(): ?int
+    {
+        return $this->deathAhMax;
+    }
+
+    public function setDeathAh(?int $min, ?int $max = null): self
+    {
+        $this->deathAhMin = $min;
+        $this->deathAhMax = $max ?? $min;
+
+        return $this;
+    }
+
+    /**
+     * « d. 143 AH » pour une date certaine, « d. 141–150 AH » pour une
+     * fourchette, null si la date est inconnue.
+     */
+    public function getDeathLabel(): ?string
+    {
+        if (null === $this->deathAhMin) {
+            return null;
+        }
+
+        return $this->deathAhMin === $this->deathAhMax
+            ? \sprintf('d. %d AH', $this->deathAhMin)
+            : \sprintf('d. %d–%d AH', $this->deathAhMin, $this->deathAhMax ?? $this->deathAhMin);
+    }
+
+    public function isMudallis(): bool
+    {
+        return $this->mudallis;
+    }
+
+    public function setMudallis(bool $mudallis): self
+    {
+        $this->mudallis = $mudallis;
+
+        return $this;
+    }
+
+    public function getTadlisType(): ?string
+    {
+        return $this->tadlisType;
+    }
+
+    public function setTadlisType(?string $tadlisType): self
+    {
+        $this->tadlisType = $tadlisType;
+
+        return $this;
+    }
+
+    public function getTadlisRank(): ?int
+    {
+        return $this->tadlisRank;
+    }
+
+    public function setTadlisRank(?int $tadlisRank): self
+    {
+        $this->tadlisRank = $tadlisRank;
 
         return $this;
     }

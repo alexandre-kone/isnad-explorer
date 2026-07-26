@@ -1281,3 +1281,58 @@ body.app-shell header {
 .field label.fl {
     display: block;
 }
+
+/* ── écrans de curation ──────────────────────────────────────────────────── */
+
+.search-wide {
+    width: 100%;
+    max-width: 34rem;
+}
+
+.name-list {
+    list-style: none;
+    display: grid;
+    gap: 9px;
+}
+
+.name-list li {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    flex-wrap: wrap;
+    border-bottom: 1px solid var(--hair);
+    padding-bottom: 8px;
+}
+
+.name-list li:last-child {
+    border-bottom: none;
+}
+
+.name-list .ar {
+    font-size: 19px;
+    direction: rtl;
+    color: var(--emerald);
+}
+
+.impact {
+    list-style: none;
+    display: grid;
+    gap: 5px;
+    margin: 12px 0 18px;
+    font-size: 13px;
+}
+
+.impact .warn {
+    color: #8a5a20;
+    font-weight: 600;
+}
+
+.flash-success {
+    background: #e6efe4;
+    border: 1.5px solid #6f8f5f;
+    border-radius: 4px;
+    padding: 9px 12px;
+    font-size: 12.5px;
+    color: #2f5324;
+    margin-bottom: 16px;
+}

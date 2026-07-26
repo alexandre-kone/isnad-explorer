@@ -4,9 +4,12 @@ declare(strict_types=1);
 
 namespace App\Domain;
 
+use App\Entity\Enum\NameKind;
+use App\Entity\Enum\NameScript;
 use App\Entity\Hadith;
 use App\Entity\Period;
 use App\Entity\Person;
+use App\Entity\PersonName;
 use Doctrine\ORM\EntityManagerInterface;
 
 /**
@@ -27,8 +30,10 @@ final class IsnadDatasetLoader
     /** @var array<string, Period> */
     private array $periods = [];
 
-    public function __construct(private readonly string $datasetPath)
-    {
+    public function __construct(
+        private readonly string $datasetPath,
+        private readonly PersonNameNormaliser $normaliser = new PersonNameNormaliser(),
+    ) {
     }
 
     /**
@@ -116,17 +121,39 @@ final class IsnadDatasetLoader
             return $this->people[$slug];
         }
 
-        $person = new Person($slug, $rawi['name'], $this->periods[$rawi['gen']]);
-        $person->setNameAr($rawi['ar'] ?? null)
-            ->setMeta($rawi['meta'] ?? null)
+        $person = new Person($slug, $this->periods[$rawi['gen']]);
+        $person->setMeta($rawi['meta'] ?? null)
             ->setRegion($rawi['region'] ?? null)
             ->setRole($rawi['role'] ?? null)
             ->setBio($rawi['bio'] ?? null)
             ->setWork($rawi['work'] ?? null);
 
+        // Le jeu de données ne donne qu'une forme par écriture : elles servent
+        // donc toutes deux d'affichage. Les formes alternatives (kunya, shuhra)
+        // seront saisies par les curateurs.
+        $this->addName($em, $person, $rawi['name'], NameScript::Latin);
+        if (isset($rawi['ar']) && '' !== $rawi['ar']) {
+            $this->addName($em, $person, $rawi['ar'], NameScript::Arabic);
+        }
+
         $em->persist($person);
 
         return $this->people[$slug] = $person;
+    }
+
+    private function addName(EntityManagerInterface $em, Person $person, string $form, NameScript $script): void
+    {
+        $name = new PersonName(
+            $person,
+            $form,
+            $this->normaliser->normalise($form, $script),
+            $script,
+            NameKind::Complete,
+        );
+        $name->setDisplay(true)->setSource('wireframe');
+
+        $person->addName($name);
+        $em->persist($name);
     }
 
     /**

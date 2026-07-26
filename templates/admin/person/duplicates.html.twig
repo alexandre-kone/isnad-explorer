@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Doublons probables — curation{% endblock %}
+
+{% block body %}
+	<main class="page">
+		<div class="page-head">
+			<h2>Doublons probables</h2>
+			<p>Fiches distinctes partageant une forme de nom identique une fois normalisée.</p>
+		</div>
+
+		{% if candidates is empty %}
+			<div class="empty" data-testid="no-duplicate">Aucun doublon détecté.</div>
+		{% else %}
+			<ul class="cards" data-testid="duplicate-list">
+				{% for candidate in candidates %}
+					<li class="card">
+						<div class="band"><span class="ref">{{ candidate.form }}</span></div>
+						<div class="cbody">
+							{% for person in candidate.people %}
+								<div class="field">
+									<a class="gold-link" href="{{ path('admin_person_show', {slug: person.slug}) }}">
+										{{ person.displayName ?? person.slug }}
+									</a>
+									<span class="hint">{{ person.period.labelFr }}</span>
+									{% for other in candidate.people|filter(o => o.slug != person.slug) %}
+										<a class="hint" href="{{ path('admin_person_merge', {slug: person.slug, keptSlug: other.slug}) }}">
+											fusionner dans {{ other.displayName ?? other.slug }} →
+										</a>
+									{% endfor %}
+								</div>
+							{% endfor %}
+						</div>
+					</li>
+				{% endfor %}
+			</ul>
+		{% endif %}
+	</main>
+{% endblock %}

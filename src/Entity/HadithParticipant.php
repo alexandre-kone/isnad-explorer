@@ -78,9 +78,23 @@ class HadithParticipant implements CuratedEntity
         return $this->person;
     }
 
+    public function setPerson(Person $person): self
+    {
+        $this->person = $person;
+
+        return $this;
+    }
+
     public function getLevel(): int
     {
         return $this->level;
+    }
+
+    public function setLevel(int $level): self
+    {
+        $this->level = $level;
+
+        return $this;
     }
 
     public function getChains(): ?string

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Domain;
 
+use App\Entity\Enum\NameScript;
 use App\Entity\Hadith;
 use App\Entity\Person;
 use App\Repository\HadithRepository;
@@ -67,8 +68,8 @@ final class IsnadGraph
 
             $rawi = [
                 'lvl' => $participant->getLevel(),
-                'name' => $person->getName(),
-                'ar' => $person->getNameAr(),
+                'name' => $person->getDisplayName(NameScript::Latin),
+                'ar' => $person->getDisplayName(NameScript::Arabic),
                 'gen' => $person->getPeriod()->getId(),
                 'meta' => $person->getMeta(),
                 'region' => $participant->getRegion(),
@@ -160,6 +161,6 @@ final class IsnadGraph
      */
     private function shortName(Person $person): string
     {
-        return trim(str_replace('ﷺ', '', $person->getName()));
+        return trim(str_replace('ﷺ', '', (string) $person->getDisplayName(NameScript::Latin)));
     }
 }
