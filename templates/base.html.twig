@@ -37,6 +37,7 @@
 			<nav class="tabs">
 				<a class="tab {{ app.request.attributes.get('_route') == 'home' ? 'on' }}" href="{{ path('home') }}">Accueil</a>
 				<a class="tab {{ app.request.attributes.get('_route') == 'search' ? 'on' }}" href="{{ path('search') }}">Hadiths</a>
+				<a class="tab {{ app.request.attributes.get('_route') == 'network' ? 'on' }}" href="{{ path('network') }}">Réseau</a>
 				{# Vues du wireframe pas encore construites : visibles mais inertes. #}
 				<span class="tab soon" title="Vue à venir" aria-disabled="true">Chaîne</span>
 			</nav>
