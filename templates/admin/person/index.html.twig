@@ -1,0 +1,52 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Transmetteurs — curation{% endblock %}
+
+{% block body %}
+	<main class="page">
+		<div class="page-head">
+			<h2>Transmetteurs</h2>
+			<p>{{ total }} fiches. La recherche porte sur <em>toutes</em> les formes de nom, arabe comprise.</p>
+		</div>
+
+		<form method="get" class="search search-wide" role="search">
+			<span class="mag" aria-hidden="true">⌕</span>
+			<input type="search" name="q" value="{{ term }}"
+				placeholder="Kunya, ism, nom arabe…" aria-label="Nom du transmetteur" autofocus>
+			<button type="submit">→</button>
+		</form>
+
+		<p style="margin: 14px 0;">
+			<a class="gold-link" href="{{ path('admin_person_duplicates') }}">Revoir les doublons probables →</a>
+		</p>
+
+		{% if term is not empty %}
+			{% if results is empty %}
+				<div class="empty" data-testid="no-person">
+					Aucun transmetteur ne correspond à « <strong>{{ term }}</strong> ».
+				</div>
+			{% else %}
+				<p class="count" data-testid="person-count">{{ results|length }} fiche(s) trouvée(s).</p>
+				<ul class="cards">
+					{% for result in results %}
+						<li class="card">
+							<div class="cbody">
+								<a class="gold-link" href="{{ path('admin_person_show', {slug: result.person.slug}) }}">
+									{{ result.person.displayName ?? result.person.slug }}
+								</a>
+								<span class="ar" style="margin-left: 10px;">{{ result.person.displayNameAr }}</span>
+
+								{# Le contexte discriminant : sans lui on ne distingue pas deux homonymes. #}
+								<div class="hint" style="margin-top: 4px;">{{ result.context }}</div>
+
+								{% if result.matched != result.person.displayName %}
+									<div class="hint">correspondance sur « {{ result.matched }} »</div>
+								{% endif %}
+							</div>
+						</li>
+					{% endfor %}
+				</ul>
+			{% endif %}
+		{% endif %}
+	</main>
+{% endblock %}

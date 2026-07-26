@@ -55,6 +55,7 @@ final class HadithRepository extends ServiceEntityRepository
         $qb = $this->createQueryBuilder('h')
             ->leftJoin('h.participants', 'hp')->addSelect('hp')
             ->leftJoin('hp.person', 'p')->addSelect('p')
+            ->leftJoin('p.names', 'pn')->addSelect('pn')
             ->leftJoin('p.period', 'per')->addSelect('per')
             ->leftJoin('h.pivot', 'pv')->addSelect('pv')
             ->orderBy('h.id', 'ASC');
@@ -67,7 +68,9 @@ final class HadithRepository extends ServiceEntityRepository
         $this->createQueryBuilder('h2')
             ->leftJoin('h2.transmissions', 't')->addSelect('t')
             ->leftJoin('t.from', 'pf')->addSelect('pf')
+            ->leftJoin('pf.names', 'pfn')->addSelect('pfn')
             ->leftJoin('t.to', 'pt')->addSelect('pt')
+            ->leftJoin('pt.names', 'ptn')->addSelect('ptn')
             ->getQuery()
             ->getResult();
 

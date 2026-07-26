@@ -43,7 +43,7 @@
 									<ol class="isnad">
 										{% for person in spine %}
 											<li>
-												<span class="chip {{ loop.first ? 'first' }}{{ hadith.pivot and person.slug == hadith.pivot.slug ? 'pivot' }}">{{ person.name }}</span>
+												<span class="chip {{ loop.first ? 'first' }}{{ hadith.pivot and person.slug == hadith.pivot.slug ? 'pivot' }}">{{ person.displayName }}</span>
 												{% if not loop.last %}<span class="arrow" aria-hidden="true">→</span>{% endif %}
 											</li>
 										{% endfor %}

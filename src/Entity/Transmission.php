@@ -74,8 +74,29 @@ class Transmission implements CuratedEntity
         return $this->to;
     }
 
+    public function setFrom(Person $from): self
+    {
+        $this->from = $from;
+
+        return $this;
+    }
+
+    public function setTo(Person $to): self
+    {
+        $this->to = $to;
+
+        return $this;
+    }
+
     public function isSpine(): bool
     {
         return $this->spine;
+    }
+
+    public function setSpine(bool $spine): self
+    {
+        $this->spine = $spine;
+
+        return $this;
     }
 }
