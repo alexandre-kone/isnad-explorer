@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Entity\Trait\Curated;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -15,8 +16,10 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity]
 #[ORM\Table(name: 'hadith_person')]
 #[ORM\UniqueConstraint(name: 'uniq_hadith_person', columns: ['hadith_id', 'person_id'])]
-class HadithParticipant
+class HadithParticipant implements CuratedEntity
 {
+    use Curated;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]

@@ -1,0 +1,40 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Connexion — Isnad Explorer{% endblock %}
+
+{# Pas de recherche dans l'en-tête sur l'écran de connexion. #}
+{% block header_search %}{% endblock %}
+
+{% block body %}
+	<main class="page page-narrow">
+		<div class="card">
+			<div class="band">
+				<span class="ref">Espace de curation</span>
+				<span class="pb ar">إسناد</span>
+			</div>
+			<div class="cbody">
+				{% if error %}
+					<p class="form-error" data-testid="login-error">{{ error.messageKey|trans(error.messageData, 'security') }}</p>
+				{% endif %}
+
+				<form method="post" action="{{ path('admin_login') }}">
+					<input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+					<div class="field">
+						<label class="fl" for="email">Adresse</label>
+						<input class="input" type="email" id="email" name="_username"
+							value="{{ lastEmail }}" autocomplete="email" required autofocus>
+					</div>
+
+					<div class="field">
+						<label class="fl" for="password">Mot de passe</label>
+						<input class="input" type="password" id="password" name="_password"
+							autocomplete="current-password" required>
+					</div>
+
+					<button class="pathbtn" type="submit">Se connecter</button>
+				</form>
+			</div>
+		</div>
+	</main>
+{% endblock %}

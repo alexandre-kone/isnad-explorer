@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Entity\Trait\Curated;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -17,8 +18,10 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\UniqueConstraint(name: 'uniq_transmission', columns: ['hadith_id', 'from_person_id', 'to_person_id'])]
 #[ORM\Index(name: 'idx_transmission_from', columns: ['from_person_id'])]
 #[ORM\Index(name: 'idx_transmission_to', columns: ['to_person_id'])]
-class Transmission
+class Transmission implements CuratedEntity
 {
+    use Curated;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
