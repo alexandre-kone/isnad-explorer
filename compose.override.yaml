@@ -16,3 +16,25 @@ services:
       MP_SMTP_AUTH_ACCEPT_ANY: 1
       MP_SMTP_AUTH_ALLOW_INSECURE: 1
 ###< symfony/mailer ###
+
+  # Interface web d'inspection de la base Postgres (dev uniquement).
+  # URL et identifiants : `make db-ui`.
+  adminer:
+    image: adminer:5
+    depends_on:
+      database:
+        condition: service_healthy
+    ports:
+      - "8080"
+    environment:
+      # Pré-remplit le champ « Serveur » du formulaire de connexion.
+      ADMINER_DEFAULT_SERVER: database
+      ADMINER_DESIGN: dracula
+    # SQLite exige un accès en écriture au fichier, même pour le consulter
+    # (verrous, journal). On aligne l'UID du conteneur sur celui du propriétaire
+    # de var/*.db pour que la connexion SQLite aboutisse.
+    user: "${UID:-1000}:${GID:-1000}"
+    volumes:
+      # Expose les bases SQLite de dev/test (var/data_dev.db, var/data_test.db)
+      # pour pouvoir les inspecter avec le système « SQLite 3 ».
+      - ./var:/db
