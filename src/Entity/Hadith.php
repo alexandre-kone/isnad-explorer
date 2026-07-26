@@ -10,10 +10,15 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Un hadith : son texte (matn), sa référence de collection, et son isnad
- * (chaîne ordonnée de narrateurs, via {@see IsnadLink}).
+ * Un hadith : son texte, ses métadonnées, et le graphe de sa transmission
+ * ({@see HadithParticipant} pour les nœuds, {@see Transmission} pour les arêtes).
+ *
+ * L'isnad n'est plus une chaîne linéaire : au-delà du pivot (مدار) il s'évente
+ * en plusieurs voies (turuq). Le segment où la chaîne reste unique est l'épine
+ * gharîb, exposée par {@see getSpine()}.
  */
 #[ORM\Entity(repositoryClass: HadithRepository::class)]
+#[ORM\Table(name: 'hadith')]
 class Hadith
 {
     #[ORM\Id]
@@ -21,29 +26,64 @@ class Hadith
     #[ORM\Column]
     private ?int $id = null;
 
-    /** Texte du hadith (matn). */
-    #[ORM\Column(type: 'text')]
-    private string $matn;
+    /** Clé stable, ex. « intention ». */
+    #[ORM\Column(length: 64, unique: true)]
+    private string $slug;
 
-    /** Référence de collection, ex. « Sahih al-Bukhari 1 ». */
+    /** Titre court, ex. « Hadith de l'intention ». */
+    #[ORM\Column(length: 255)]
+    private string $label;
+
+    /** Texte français (matn traduit). */
+    #[ORM\Column(type: 'text')]
+    private string $textFr;
+
+    #[ORM\Column(type: 'text', nullable: true)]
+    private ?string $textAr = null;
+
+    /** Référence canonique, ex. « Sahîh al-Bukhârî, n°1 ». */
     #[ORM\Column(length: 255)]
     private string $reference;
 
-    /**
-     * Maillons de l'isnad, ordonnés du premier transmetteur (proche du
-     * Prophète ﷺ) au compilateur.
-     *
-     * @var Collection<int, IsnadLink>
-     */
-    #[ORM\OneToMany(targetEntity: IsnadLink::class, mappedBy: 'hadith', cascade: ['persist'], orphanRemoval: true)]
-    #[ORM\OrderBy(['position' => 'ASC'])]
-    private Collection $isnadLinks;
+    /** Grade de fiabilité, ex. « Sahîh ». */
+    #[ORM\Column(length: 64, nullable: true)]
+    private ?string $grade = null;
 
-    public function __construct(string $matn, string $reference)
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $theme = null;
+
+    #[ORM\Column(type: 'text', nullable: true)]
+    private ?string $intro = null;
+
+    /** Libellé du nombre de voies, ex. « 6 voies (turuq) ». */
+    #[ORM\Column(length: 64, nullable: true)]
+    private ?string $turuq = null;
+
+    /** Le مدار : narrateur sur lequel toutes les voies convergent. */
+    #[ORM\ManyToOne(targetEntity: Person::class)]
+    private ?Person $pivot = null;
+
+    /** Un hadith non prêt est listé mais pas explorable. */
+    #[ORM\Column]
+    private bool $ready = true;
+
+    /** @var Collection<int, HadithParticipant> */
+    #[ORM\OneToMany(targetEntity: HadithParticipant::class, mappedBy: 'hadith', cascade: ['persist'], orphanRemoval: true)]
+    #[ORM\OrderBy(['level' => 'ASC'])]
+    private Collection $participants;
+
+    /** @var Collection<int, Transmission> */
+    #[ORM\OneToMany(targetEntity: Transmission::class, mappedBy: 'hadith', cascade: ['persist'], orphanRemoval: true)]
+    private Collection $transmissions;
+
+    public function __construct(string $slug, string $label, string $textFr, string $reference)
     {
-        $this->matn = $matn;
+        $this->slug = $slug;
+        $this->label = $label;
+        $this->textFr = $textFr;
         $this->reference = $reference;
-        $this->isnadLinks = new ArrayCollection();
+        $this->participants = new ArrayCollection();
+        $this->transmissions = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -51,9 +91,31 @@ class Hadith
         return $this->id;
     }
 
-    public function getMatn(): string
+    public function getSlug(): string
     {
-        return $this->matn;
+        return $this->slug;
+    }
+
+    public function getLabel(): string
+    {
+        return $this->label;
+    }
+
+    public function getTextFr(): string
+    {
+        return $this->textFr;
+    }
+
+    public function getTextAr(): ?string
+    {
+        return $this->textAr;
+    }
+
+    public function setTextAr(?string $textAr): self
+    {
+        $this->textAr = $textAr;
+
+        return $this;
     }
 
     public function getReference(): string
@@ -61,31 +123,148 @@ class Hadith
         return $this->reference;
     }
 
-    /**
-     * @return Collection<int, IsnadLink>
-     */
-    public function getIsnadLinks(): Collection
+    public function getGrade(): ?string
     {
-        return $this->isnadLinks;
+        return $this->grade;
     }
 
-    /**
-     * Ajoute un narrateur en fin de chaîne (position auto-incrémentée).
-     */
-    public function addNarrator(Narrator $narrator): self
+    public function setGrade(?string $grade): self
     {
-        $this->isnadLinks->add(new IsnadLink($this, $narrator, $this->isnadLinks->count()));
+        $this->grade = $grade;
+
+        return $this;
+    }
+
+    public function getTheme(): ?string
+    {
+        return $this->theme;
+    }
+
+    public function setTheme(?string $theme): self
+    {
+        $this->theme = $theme;
+
+        return $this;
+    }
+
+    public function getIntro(): ?string
+    {
+        return $this->intro;
+    }
+
+    public function setIntro(?string $intro): self
+    {
+        $this->intro = $intro;
+
+        return $this;
+    }
+
+    public function getTuruq(): ?string
+    {
+        return $this->turuq;
+    }
+
+    public function setTuruq(?string $turuq): self
+    {
+        $this->turuq = $turuq;
+
+        return $this;
+    }
+
+    public function getPivot(): ?Person
+    {
+        return $this->pivot;
+    }
+
+    public function setPivot(?Person $pivot): self
+    {
+        $this->pivot = $pivot;
+
+        return $this;
+    }
+
+    public function isReady(): bool
+    {
+        return $this->ready;
+    }
+
+    public function setReady(bool $ready): self
+    {
+        $this->ready = $ready;
+
+        return $this;
+    }
+
+    /** @return Collection<int, HadithParticipant> */
+    public function getParticipants(): Collection
+    {
+        return $this->participants;
+    }
+
+    /** @return Collection<int, Transmission> */
+    public function getTransmissions(): Collection
+    {
+        return $this->transmissions;
+    }
+
+    public function addParticipant(Person $person, int $level): HadithParticipant
+    {
+        $participant = new HadithParticipant($this, $person, $level);
+        $this->participants->add($participant);
+
+        return $participant;
+    }
+
+    public function addTransmission(Person $from, Person $to, bool $spine = false): self
+    {
+        $this->transmissions->add(new Transmission($this, $from, $to, $spine));
 
         return $this;
     }
 
     /**
-     * Narrateurs de l'isnad, dans l'ordre.
+     * Chaîne unique (gharîb) : le segment initial où l'isnad ne se divise pas,
+     * du Prophète ﷺ jusqu'au pivot. Reconstituée en suivant les arêtes marquées
+     * comme épine, depuis le nœud d'épine qui n'est la cible d'aucune autre.
      *
-     * @return list<Narrator>
+     * @return list<Person>
      */
-    public function getIsnad(): array
+    public function getSpine(): array
     {
-        return $this->isnadLinks->map(static fn (IsnadLink $link): Narrator => $link->getNarrator())->getValues();
+        /** @var array<string, Transmission> $next */
+        $next = [];
+        $targets = [];
+        foreach ($this->transmissions as $transmission) {
+            if (!$transmission->isSpine()) {
+                continue;
+            }
+            $next[$transmission->getFrom()->getSlug()] = $transmission;
+            $targets[$transmission->getTo()->getSlug()] = true;
+        }
+
+        $current = null;
+        foreach ($next as $slug => $transmission) {
+            if (!isset($targets[$slug])) {
+                $current = $transmission->getFrom();
+                break;
+            }
+        }
+
+        if (null === $current) {
+            return [];
+        }
+
+        $chain = [$current];
+        $seen = [$current->getSlug() => true];
+        while (isset($next[$current->getSlug()])) {
+            $current = $next[$current->getSlug()]->getTo();
+            if (isset($seen[$current->getSlug()])) {
+                break; // garde-fou : le jeu de données ne doit pas boucler
+            }
+            $seen[$current->getSlug()] = true;
+            $chain[] = $current;
+        }
+
+        return $chain;
     }
 }

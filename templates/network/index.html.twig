@@ -1,0 +1,99 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Réseau de transmission — Isnad Explorer{% endblock %}
+
+{# La scène occupe le viewport : le graphe a besoin d'une hauteur bornée. #}
+{% block body_class %}app-shell{% endblock %}
+
+{#
+	Toute la vue est un seul îlot Stimulus : la recherche de l'en-tête pilote le
+	même graphe que la scène, elle doit donc vivre dans la portée du contrôleur.
+	D'où l'accroche sur <body> plutôt que sur un conteneur interne.
+#}
+{% block body_attributes %} data-controller="network" data-network-endpoint-value="{{ path('api_isnad') }}"{% endblock %}
+{% block header_search %}
+	<div class="searchwrap">
+		<div class="search">
+			<span class="mag" aria-hidden="true">⌕</span>
+			<input type="search" id="q" autocomplete="off"
+				data-network-target="search"
+				data-action="input->network#search keydown->network#navigate"
+				placeholder="Rechercher un narrateur…"
+				aria-label="Nom du narrateur">
+		</div>
+		<div class="results" data-network-target="results"></div>
+	</div>
+{% endblock %}
+
+{% block body %}
+	<div class="wrap">
+		<div class="stage">
+			<div class="watermark ar" aria-hidden="true">مدار</div>
+
+			{# Rail des générations, du Prophète ﷺ vers les collecteurs. #}
+			<div class="axis" data-network-target="axis" aria-hidden="true"></div>
+
+			<div id="net" data-network-target="canvas"></div>
+
+			<div class="stage-cap">
+				<div class="capline">
+					<div class="hsel">
+						<button type="button" data-action="network#toggleHadithMenu">
+							<span class="ar" data-network-target="hadithButtonAr"></span>
+							<span data-network-target="hadithButtonFr">Chargement…</span>
+							<span class="chev" aria-hidden="true">▾</span>
+						</button>
+						<div class="hmenu" data-network-target="hadithMenu"></div>
+					</div>
+					<div class="cap-txt">
+						<h2 data-network-target="capTitle">Réseau de transmission</h2>
+						<p data-network-target="capIntro"></p>
+					</div>
+				</div>
+			</div>
+
+			<div class="filters">
+				<div class="fgroup">
+					<div class="fglab">Filtrer par génération</div>
+					<div class="chips" data-network-target="genChips"></div>
+				</div>
+				<div class="fgroup">
+					<div class="fglab">Isoler une voie (recueil)</div>
+					<div class="chips" data-network-target="colChips"></div>
+				</div>
+			</div>
+
+			<div class="legend">
+				<div class="lt">Légende</div>
+				<div class="row"><i style="background:#13503b"></i>Prophète ﷺ</div>
+				<div class="row"><i style="background:#2f6e54"></i>Compagnon (Sahaba)</div>
+				<div class="row"><i style="background:#6f7e3a"></i>Successeur (Tâbiʿîn)</div>
+				<div class="row"><i style="background:#a07d33"></i>Suiveur (Atbâʿ)</div>
+				<div class="row"><i class="hex" style="background:#b08d3f"></i>Collecteur / recueil</div>
+				<div class="row"><i class="thread"></i>Chaîne unique (gharîb)</div>
+				<div class="note">مدار الإسناد — le « pivot » est le narrateur sur lequel toutes les voies se rejoignent.</div>
+			</div>
+
+			<div class="controls">
+				<div class="seg-toggle" data-network-target="modeToggle">
+					<div data-mode="strata" class="on" data-action="network#setMode">Strates temporelles</div>
+					<div data-mode="free" data-action="network#setMode">Flux libre</div>
+				</div>
+				<div class="ctl" data-action="network#fitView"><b>⤢</b> Recentrer</div>
+				<div class="ctl" data-action="network#focusPivot"><b>◎</b> Isoler le pivot</div>
+				<div class="ctl" data-network-target="physicsButton" data-action="network#togglePhysics"><b>❄</b> Figer</div>
+			</div>
+
+			<div class="tip" data-network-target="tip"></div>
+		</div>
+
+		<aside class="fiche">
+			<div class="fiche-h"><span class="dot"></span>Fiche du maillon</div>
+			<div class="card" data-network-target="fiche"></div>
+			<div class="hint">
+				Cliquez un maillon pour surligner sa voie complète (ancêtres + élèves).
+				Glissez un nœud, ou isolez une voie de recueil ci-contre.
+			</div>
+		</aside>
+	</div>
+{% endblock %}

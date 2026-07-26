@@ -21,3 +21,8 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+
+    # Jeu de données d'isnads versionné, converti depuis le wireframe.
+    App\Domain\IsnadDatasetLoader:
+        arguments:
+            $datasetPath: '%kernel.project_dir%/data/isnad/wireframe.json'
