@@ -1244,3 +1244,40 @@ body.app-shell header {
         display: none;
     }
 }
+
+/* ── formulaires d'administration ────────────────────────────────────────── */
+
+.page-narrow {
+    max-width: 26rem;
+}
+
+.input {
+    width: 100%;
+    margin-top: 5px;
+    padding: 9px 11px;
+    background: var(--paper2);
+    border: 1.5px solid var(--hair);
+    border-radius: 3px;
+    font: 14px 'Spectral', serif;
+    color: var(--ink);
+}
+
+.input:focus {
+    outline: none;
+    border-color: var(--gold);
+}
+
+.form-error {
+    background: #f7e4e0;
+    border: 1.5px solid #c0705c;
+    border-radius: 4px;
+    padding: 9px 12px;
+    font-size: 12.5px;
+    color: #7d3324;
+    margin-bottom: 14px;
+}
+
+.fiche .field label.fl,
+.field label.fl {
+    display: block;
+}

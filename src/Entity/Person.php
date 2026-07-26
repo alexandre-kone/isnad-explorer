@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Entity\Trait\Curated;
 use App\Repository\PersonRepository;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -16,8 +17,10 @@ use Doctrine\ORM\Mapping as ORM;
  */
 #[ORM\Entity(repositoryClass: PersonRepository::class)]
 #[ORM\Table(name: 'person')]
-class Person
+class Person implements CuratedEntity
 {
+    use Curated;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]

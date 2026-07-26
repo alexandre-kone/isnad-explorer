@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Entity\Trait\Curated;
 use App\Repository\HadithRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -19,8 +20,10 @@ use Doctrine\ORM\Mapping as ORM;
  */
 #[ORM\Entity(repositoryClass: HadithRepository::class)]
 #[ORM\Table(name: 'hadith')]
-class Hadith
+class Hadith implements CuratedEntity
 {
+    use Curated;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
