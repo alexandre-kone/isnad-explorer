@@ -8,14 +8,14 @@ use App\Entity\Trait\Curated;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Arête du graphe : « untel a transmis à untel », dans le contexte d'un hadith.
+ * Arête du graphe : « untel a transmis à untel », dans le contexte d'une riwāya.
  *
  * Le sens va du maître (amont) vers l'élève (aval), comme dans un isnad lu du
  * Prophète ﷺ vers le compilateur.
  */
 #[ORM\Entity]
 #[ORM\Table(name: 'transmission')]
-#[ORM\UniqueConstraint(name: 'uniq_transmission', columns: ['hadith_id', 'from_person_id', 'to_person_id'])]
+#[ORM\UniqueConstraint(name: 'uniq_transmission', columns: ['riwaya_id', 'from_person_id', 'to_person_id'])]
 #[ORM\Index(name: 'idx_transmission_from', columns: ['from_person_id'])]
 #[ORM\Index(name: 'idx_transmission_to', columns: ['to_person_id'])]
 class Transmission implements CuratedEntity
@@ -27,9 +27,9 @@ class Transmission implements CuratedEntity
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(targetEntity: Hadith::class, inversedBy: 'transmissions')]
+    #[ORM\ManyToOne(targetEntity: Riwaya::class, inversedBy: 'transmissions')]
     #[ORM\JoinColumn(nullable: false)]
-    private Hadith $hadith;
+    private Riwaya $riwaya;
 
     #[ORM\ManyToOne(targetEntity: Person::class)]
     #[ORM\JoinColumn(name: 'from_person_id', nullable: false)]
@@ -46,9 +46,9 @@ class Transmission implements CuratedEntity
     #[ORM\Column]
     private bool $spine = false;
 
-    public function __construct(Hadith $hadith, Person $from, Person $to, bool $spine = false)
+    public function __construct(Riwaya $riwaya, Person $from, Person $to, bool $spine = false)
     {
-        $this->hadith = $hadith;
+        $this->riwaya = $riwaya;
         $this->from = $from;
         $this->to = $to;
         $this->spine = $spine;
@@ -59,9 +59,9 @@ class Transmission implements CuratedEntity
         return $this->id;
     }
 
-    public function getHadith(): Hadith
+    public function getRiwaya(): Riwaya
     {
-        return $this->hadith;
+        return $this->riwaya;
     }
 
     public function getFrom(): Person

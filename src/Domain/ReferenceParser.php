@@ -7,7 +7,7 @@ namespace App\Domain;
 /**
  * Découpe une référence composite en citations exploitables.
  *
- * `Hadith.reference` est un VARCHAR unique où l'on a concaténé une liste faute
+ * `Riwaya.reference` est un VARCHAR unique où l'on a concaténé une liste faute
  * de pouvoir l'exprimer : « Sahîh al-Bukhârî, n°13 · Muslim, n°45 ». Ce parseur
  * est ce qui la rend structurable.
  *

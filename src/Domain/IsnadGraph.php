@@ -5,9 +5,10 @@ declare(strict_types=1);
 namespace App\Domain;
 
 use App\Entity\Enum\NameScript;
-use App\Entity\Hadith;
+use App\Entity\HadithCluster;
 use App\Entity\Person;
-use App\Repository\HadithRepository;
+use App\Entity\Riwaya;
+use App\Repository\HadithClusterRepository;
 use App\Repository\PeriodRepository;
 
 /**
@@ -27,7 +28,7 @@ final class IsnadGraph
 
     public function __construct(
         private readonly PeriodRepository $periods,
-        private readonly HadithRepository $hadiths,
+        private readonly HadithClusterRepository $clusters,
     ) {
     }
 
@@ -47,8 +48,13 @@ final class IsnadGraph
         }
 
         $hadiths = [];
-        foreach ($this->hadiths->findAllWithGraph() as $hadith) {
-            $hadiths[$hadith->getSlug()] = $this->hadith($hadith);
+        foreach ($this->clusters->findAllWithGraph() as $cluster) {
+            $riwaya = $cluster->getPrimaryRiwaya();
+            if (null === $riwaya) {
+                continue;
+            }
+
+            $hadiths[$cluster->getSlug()] = $this->hadith($cluster, $riwaya);
         }
 
         return ['periods' => $periods, 'hadiths' => $hadiths];
@@ -57,12 +63,12 @@ final class IsnadGraph
     /**
      * @return array<string, mixed>
      */
-    private function hadith(Hadith $hadith): array
+    private function hadith(HadithCluster $cluster, Riwaya $riwaya): array
     {
-        [$up, $down] = $this->neighbours($hadith);
+        [$up, $down] = $this->neighbours($riwaya);
 
         $rawis = [];
-        foreach ($hadith->getParticipants() as $participant) {
+        foreach ($riwaya->getParticipants() as $participant) {
             $person = $participant->getPerson();
             $slug = $person->getSlug();
 
@@ -88,7 +94,7 @@ final class IsnadGraph
                 $rawi['down'] = $this->join($down[$slug]);
             }
 
-            if ($hadith->getPivot()?->getSlug() === $slug) {
+            if ($riwaya->getPivot()?->getSlug() === $slug) {
                 $rawi['pivot'] = true;
                 $rawi['chains'] = $participant->getChains();
             }
@@ -97,7 +103,7 @@ final class IsnadGraph
         }
 
         $links = [];
-        foreach ($hadith->getTransmissions() as $transmission) {
+        foreach ($riwaya->getTransmissions() as $transmission) {
             $link = [$transmission->getFrom()->getSlug(), $transmission->getTo()->getSlug()];
             if ($transmission->isSpine()) {
                 $link[] = true;
@@ -106,17 +112,17 @@ final class IsnadGraph
         }
 
         return [
-            'key' => $hadith->getSlug(),
-            'label' => $hadith->getLabel(),
-            'fr' => $hadith->getTextFr(),
-            'ar' => $hadith->getTextAr(),
-            'ref' => $hadith->getReference(),
-            'grade' => $hadith->getGrade(),
-            'theme' => $hadith->getTheme(),
-            'intro' => $hadith->getIntro(),
-            'turuq' => $hadith->getTuruq(),
-            'pivot' => $hadith->getPivot()?->getSlug(),
-            'ready' => $hadith->isReady(),
+            'key' => $cluster->getSlug(),
+            'label' => $cluster->getLabel(),
+            'fr' => $riwaya->getTextFr(),
+            'ar' => $riwaya->getTextAr(),
+            'ref' => $riwaya->getReference(),
+            'grade' => $riwaya->getGrade(),
+            'theme' => $cluster->getTheme(),
+            'intro' => $cluster->getIntro(),
+            'turuq' => $cluster->getTuruq(),
+            'pivot' => $riwaya->getPivot()?->getSlug(),
+            'ready' => $cluster->isReady(),
             'rawis' => $rawis,
             'links' => $links,
         ];
@@ -127,12 +133,12 @@ final class IsnadGraph
      *
      * @return array{array<string, list<string>>, array<string, list<string>>}
      */
-    private function neighbours(Hadith $hadith): array
+    private function neighbours(Riwaya $riwaya): array
     {
         $up = [];
         $down = [];
 
-        foreach ($hadith->getTransmissions() as $transmission) {
+        foreach ($riwaya->getTransmissions() as $transmission) {
             $from = $transmission->getFrom();
             $to = $transmission->getTo();
 

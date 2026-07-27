@@ -16,7 +16,7 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * La personne est dédupliquée et partagée par tous les hadiths : c'est ce qui
  * rendra possible, plus tard, les corrélations entre chaînes. Ce qui dépend du
- * hadith (niveau vertical, nombre de voies) vit dans {@see HadithParticipant}.
+ * l'occurrence (niveau vertical, nombre de voies) vit dans {@see RiwayaParticipant}.
  *
  * Les libellés ne sont plus des colonnes : un homme porte plusieurs noms, tous
  * dans {@see PersonName}. La fiche ne garde que l'identité et les faits.

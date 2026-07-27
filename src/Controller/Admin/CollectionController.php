@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Controller\Admin;
 
 use App\Repository\CollectionRepository;
-use App\Repository\HadithReferenceRepository;
+use App\Repository\RiwayaReferenceRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -21,7 +21,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 final class CollectionController extends AbstractController
 {
     #[Route('', name: 'admin_collection_index', methods: ['GET'])]
-    public function index(CollectionRepository $collections, HadithReferenceRepository $references): Response
+    public function index(CollectionRepository $collections, RiwayaReferenceRepository $references): Response
     {
         return $this->render('admin/collection/index.html.twig', [
             'collections' => $collections->findOrdered(),
@@ -30,7 +30,7 @@ final class CollectionController extends AbstractController
     }
 
     #[Route('/{slug}', name: 'admin_collection_show', methods: ['GET'])]
-    public function show(string $slug, CollectionRepository $collections, HadithReferenceRepository $references): Response
+    public function show(string $slug, CollectionRepository $collections, RiwayaReferenceRepository $references): Response
     {
         $collection = $collections->findOneBySlug($slug);
         if (null === $collection) {

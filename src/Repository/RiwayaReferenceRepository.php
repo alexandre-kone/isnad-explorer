@@ -5,31 +5,32 @@ declare(strict_types=1);
 namespace App\Repository;
 
 use App\Entity\Collection;
-use App\Entity\HadithReference;
+use App\Entity\RiwayaReference;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<HadithReference>
+ * @extends ServiceEntityRepository<RiwayaReference>
  */
-final class HadithReferenceRepository extends ServiceEntityRepository
+final class RiwayaReferenceRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, HadithReference::class);
+        parent::__construct($registry, RiwayaReference::class);
     }
 
     /**
-     * @return list<HadithReference>
+     * @return list<RiwayaReference>
      */
     public function findByCollection(Collection $collection): array
     {
-        return $this->createQueryBuilder('r')
-            ->addSelect('h')
-            ->join('r.hadith', 'h')
-            ->where('r.collection = :collection')
+        return $this->createQueryBuilder('ref')
+            ->addSelect('r', 'c')
+            ->join('ref.riwaya', 'r')
+            ->join('r.cluster', 'c')
+            ->where('ref.collection = :collection')
             ->setParameter('collection', $collection)
-            ->orderBy('h.label', 'ASC')
+            ->orderBy('c.label', 'ASC')
             ->getQuery()
             ->getResult();
     }
@@ -40,9 +41,9 @@ final class HadithReferenceRepository extends ServiceEntityRepository
     public function countByCollection(): array
     {
         /** @var list<array{collection: int, total: int}> $rows */
-        $rows = $this->createQueryBuilder('r')
-            ->select('IDENTITY(r.collection) AS collection', 'COUNT(r.id) AS total')
-            ->groupBy('r.collection')
+        $rows = $this->createQueryBuilder('ref')
+            ->select('IDENTITY(ref.collection) AS collection', 'COUNT(ref.id) AS total')
+            ->groupBy('ref.collection')
             ->getQuery()
             ->getResult();
 

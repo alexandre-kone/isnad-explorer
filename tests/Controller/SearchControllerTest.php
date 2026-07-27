@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Controller;
 
-use App\Repository\HadithRepository;
+use App\Repository\RiwayaRepository;
 use App\Tests\PreparesHadithDatabase;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
@@ -54,21 +54,21 @@ final class SearchControllerTest extends WebTestCase
     }
 
     /**
-     * La limite s'applique aux hadiths (pas aux arêtes jointes du graphe) : un
-     * hadith renvoyé conserve l'intégralité de sa transmission, même avec
-     * limit = 1 alors que plusieurs hadiths correspondent.
+     * La limite s'applique aux riwāyāt (pas aux arêtes jointes du graphe) : une
+     * riwāya renvoyée conserve l'intégralité de sa transmission, même avec
+     * limit = 1 alors que plusieurs correspondent.
      */
-    public function testLimitCountsHadithsAndKeepsFullGraph(): void
+    public function testLimitCountsRiwayatAndKeepsFullGraph(): void
     {
-        $repository = static::getContainer()->get(HadithRepository::class);
+        $repository = static::getContainer()->get(RiwayaRepository::class);
 
-        // « isl » correspond à plusieurs hadiths (îmân, ihsân…).
+        // « isl » correspond à plusieurs occurrences (îmân, ihsân…).
         self::assertGreaterThan(1, \count($repository->searchByMatn('isl', 20)));
 
         $results = $repository->searchByMatn('isl', 1);
 
         self::assertCount(1, $results);
-        // Le graphe du hadith retenu est complet, pas tronqué par la limite.
+        // Le graphe de la riwāya retenue est complet, pas tronqué par la limite.
         self::assertGreaterThan(1, $results[0]->getTransmissions()->count());
         self::assertNotEmpty($results[0]->getSpine());
     }
@@ -79,7 +79,7 @@ final class SearchControllerTest extends WebTestCase
      */
     public function testLikeWildcardIsTreatedLiterally(): void
     {
-        $repository = static::getContainer()->get(HadithRepository::class);
+        $repository = static::getContainer()->get(RiwayaRepository::class);
 
         self::assertSame([], $repository->searchByMatn('%', 20));
     }
