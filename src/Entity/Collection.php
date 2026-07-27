@@ -134,24 +134,4 @@ class Collection implements CuratedEntity
         return $this->editions;
     }
 
-    public function addEdition(Edition $edition): self
-    {
-        if (!$this->editions->contains($edition)) {
-            $this->editions->add($edition);
-        }
-
-        return $this;
-    }
-
-    /** L'édition dont la numérotation fait foi, s'il y en a une de désignée. */
-    public function getReferenceEdition(): ?Edition
-    {
-        foreach ($this->editions as $edition) {
-            if ($edition->isReference()) {
-                return $edition;
-            }
-        }
-
-        return null;
-    }
 }

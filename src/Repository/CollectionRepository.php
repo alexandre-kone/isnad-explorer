@@ -18,11 +18,6 @@ final class CollectionRepository extends ServiceEntityRepository
         parent::__construct($registry, Collection::class);
     }
 
-    public function findOneByTitleKey(string $titleKey): ?Collection
-    {
-        return $this->findOneBy(['titleKey' => $titleKey]);
-    }
-
     public function findOneBySlug(string $slug): ?Collection
     {
         return $this->findOneBy(['slug' => $slug]);

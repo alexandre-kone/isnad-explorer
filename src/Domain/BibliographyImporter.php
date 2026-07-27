@@ -20,34 +20,50 @@ final class BibliographyImporter
     /** @var array<string, Collection> */
     private array $collections = [];
 
-    /** @var array<string, true> Slugs déjà attribués, y compris avant flush. */
-    private array $slugs = [];
-
     public function __construct(
         private readonly ReferenceParser $parser = new ReferenceParser(),
     ) {
     }
 
     /**
-     * Les entités créées sont persistées mais pas flushées : l'appelant décide
+     * Réexécutable : une citation déjà enregistrée est ignorée, pas dupliquée.
+     * Les entités créées sont persistées mais pas flushées, l'appelant décide
      * du moment de l'écriture.
      *
      * @return list<HadithReference>
      */
     public function import(EntityManagerInterface $em, Hadith $hadith): array
     {
-        $references = [];
+        $created = [];
 
         foreach ($this->parser->parse($hadith->getReference()) as $position => $citation) {
-            $reference = new HadithReference($hadith, $this->collection($em, $citation), $citation->number);
-            $reference->setPosition($position)->setPrimary(0 === $position);
+            $collection = $this->collection($em, $citation);
+
+            if ($this->alreadyReferenced($hadith, $collection, $citation->number)) {
+                continue;
+            }
+
+            $reference = new HadithReference($hadith, $collection, $citation->number);
+            $reference->setPosition($position)
+                ->setPrimary(0 === $position && $hadith->getReferences()->isEmpty());
 
             $hadith->addReference($reference);
             $em->persist($reference);
-            $references[] = $reference;
+            $created[] = $reference;
         }
 
-        return $references;
+        return $created;
+    }
+
+    private function alreadyReferenced(Hadith $hadith, Collection $collection, ?string $number): bool
+    {
+        foreach ($hadith->getReferences() as $reference) {
+            if ($reference->getCollection() === $collection && $reference->getNumber() === $number) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private function collection(EntityManagerInterface $em, Citation $citation): Collection
@@ -101,12 +117,25 @@ final class BibliographyImporter
 
         $slug = $base;
         $suffix = 1;
-        while (isset($this->slugs[$slug]) || null !== $em->getRepository(Collection::class)->findOneBy(['slug' => $slug])) {
+        while ($this->taken($em, $slug)) {
             $slug = $base.'-'.++$suffix;
         }
 
-        $this->slugs[$slug] = true;
-
         return $slug;
+    }
+
+    /**
+     * Les recueils créés pendant l'import ne sont pas encore en base : le cache
+     * complète la requête, en ignorant ses entrées devenues détachées.
+     */
+    private function taken(EntityManagerInterface $em, string $slug): bool
+    {
+        foreach ($this->collections as $collection) {
+            if ($collection->getSlug() === $slug && $em->contains($collection)) {
+                return true;
+            }
+        }
+
+        return null !== $em->getRepository(Collection::class)->findOneBy(['slug' => $slug]);
     }
 }

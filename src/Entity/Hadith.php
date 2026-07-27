@@ -225,11 +225,29 @@ class Hadith implements CuratedEntity
         return $this->references;
     }
 
+    /**
+     * L'unicité `(hadith, recueil, numéro)` est tenue ici et pas seulement par
+     * l'index : PostgreSQL considère deux `NULL` comme distincts, or le numéro
+     * nul est un cas prévu — « recueil cité sans numéro ».
+     */
     public function addReference(HadithReference $reference): self
     {
-        if (!$this->references->contains($reference)) {
-            $this->references->add($reference);
+        foreach ($this->references as $existing) {
+            if ($existing === $reference) {
+                return $this;
+            }
+
+            if ($existing->getCollection() === $reference->getCollection()
+                && $existing->getNumber() === $reference->getNumber()) {
+                throw new \InvalidArgumentException(\sprintf(
+                    '« %s » est déjà référencé dans %s.',
+                    $this->slug,
+                    $reference->getCollection()->getTitle(),
+                ));
+            }
         }
+
+        $this->references->add($reference);
 
         return $this;
     }

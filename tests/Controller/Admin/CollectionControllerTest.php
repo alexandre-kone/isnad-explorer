@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Controller\Admin;
 
+use App\Domain\BibliographyImporter;
 use App\Domain\ReferenceParser;
 use App\Entity\Collection;
 use App\Entity\User;
@@ -97,6 +98,21 @@ final class CollectionControllerTest extends WebTestCase
 
             self::assertTrue($actual[0]->isPrimary());
         }
+    }
+
+    public function testImportingTheSameCorpusTwiceAddsNothing(): void
+    {
+        $importer = new BibliographyImporter();
+        $hadiths = static::getContainer()->get(HadithRepository::class)->findAll();
+
+        foreach ($hadiths as $hadith) {
+            self::assertSame([], $importer->import($this->em, $hadith));
+        }
+
+        $this->em->flush();
+
+        $collections = static::getContainer()->get(CollectionRepository::class)->findOrdered();
+        self::assertCount(3, $collections);
     }
 
     /** Le corpus cite « Muslim » et « Sahîh Muslim » : une seule ligne en base. */
