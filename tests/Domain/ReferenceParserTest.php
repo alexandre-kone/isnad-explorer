@@ -56,6 +56,8 @@ final class ReferenceParserTest extends TestCase
         yield 'article' => ['al-Bukhârî', 'Bukhârî'];
         yield 'genre et article' => ['Sahîh al-Bukhârî', 'Bukhârî'];
         yield 'diacritiques' => ['Abû Dâwûd', 'Abu Dawud'];
+        yield 'kunya déclinée' => ['Sunan Abî Dâwûd', 'Abû Dâwûd'];
+        yield 'kunya déclinée en second' => ['Musannaf Ibn Abî Shayba', 'Ibn Abû Shayba'];
         yield 'casse' => ['MUSLIM', 'muslim'];
         yield 'espaces multiples' => ['Sunan   al-Nasâʾî', 'Nasai'];
     }
@@ -65,6 +67,12 @@ final class ReferenceParserTest extends TestCase
         self::assertNotSame(
             $this->parser->titleKey('Sahîh al-Bukhârî'),
             $this->parser->titleKey('Sahîh Muslim'),
+        );
+
+        // Le repliage du génitif ne doit pas s'attaquer à une syllabe interne.
+        self::assertNotSame(
+            $this->parser->titleKey('Abû Dâwûd'),
+            $this->parser->titleKey('al-Rabîʿ'),
         );
     }
 

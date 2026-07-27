@@ -67,6 +67,10 @@ final class ReferenceParser
         $value = mb_strtolower($value);
         $value = trim((string) preg_replace('/\s+/u', ' ', $value));
 
+        // Le nom qui suit le mot de genre est au génitif : « Sunan Abî Dâwûd »
+        // désigne le recueil que le nom seul cite « Abû Dâwûd ».
+        $value = (string) preg_replace('/\b(?:abi|aba)\b/u', 'abu', $value);
+
         foreach (self::GENRE_PREFIXES as $prefix) {
             if (str_starts_with($value, $prefix.' ')) {
                 $value = substr($value, \strlen($prefix) + 1);
