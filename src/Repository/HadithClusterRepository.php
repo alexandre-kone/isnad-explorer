@@ -39,8 +39,15 @@ final class HadithClusterRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
 
+        if ([] === $clusters) {
+            return [];
+        }
+
         // Les arêtes sont chargées à part : jointes à la requête ci-dessus,
-        // elles multiplieraient les lignes par le nombre de participants.
+        // elles multiplieraient les lignes par le nombre de participants. La
+        // restriction aux clusters déjà retournés lie explicitement les deux
+        // requêtes — sans elle, filtrer la première laisserait la seconde
+        // charger tout le graphe.
         $this->getEntityManager()->createQueryBuilder()
             ->select('r2', 't', 'pf', 'pfn', 'pt', 'ptn')
             ->from(Riwaya::class, 'r2')
@@ -49,6 +56,8 @@ final class HadithClusterRepository extends ServiceEntityRepository
             ->leftJoin('pf.names', 'pfn')
             ->leftJoin('t.to', 'pt')
             ->leftJoin('pt.names', 'ptn')
+            ->where('r2.cluster IN (:clusters)')
+            ->setParameter('clusters', $clusters)
             ->getQuery()
             ->getResult();
 

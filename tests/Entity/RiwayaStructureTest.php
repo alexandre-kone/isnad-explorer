@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Entity;
 
+use App\Entity\HadithCluster;
 use App\Repository\HadithClusterRepository;
 use App\Repository\RiwayaRepository;
 use App\Tests\PreparesHadithDatabase;
@@ -62,9 +63,18 @@ final class RiwayaStructureTest extends WebTestCase
         self::assertSame('Hadith de l\'intention', $cluster->getLabel());
         self::assertNotNull($cluster->getTuruq());
 
-        // Le texte n'est plus accessible depuis l'enseignement : il faut passer
-        // par une voie, ce qui est précisément l'objet de la phase.
-        self::assertFalse(method_exists($cluster, 'getTextFr'));
+        // Le mappage — donc la table — ne porte plus rien qui varie d'une voie
+        // à l'autre. C'est ce qui attraperait une colonne texte réintroduite
+        // sur l'enseignement.
+        $fields = static::getContainer()->get(EntityManagerInterface::class)
+            ->getClassMetadata(HadithCluster::class)
+            ->getFieldNames();
+
+        self::assertSame(
+            [],
+            array_values(array_intersect(['textFr', 'textAr', 'reference', 'grade'], $fields)),
+            'Le texte, la citation et le grade appartiennent à la riwāya.',
+        );
     }
 
     public function testTheStructuredReferencesFollowedTheRiwaya(): void
