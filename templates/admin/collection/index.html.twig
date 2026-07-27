@@ -1,0 +1,48 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Recueils — curation{% endblock %}
+
+{% block body %}
+	<main class="page">
+		<div class="page-head">
+			<h2>Recueils</h2>
+			<p>
+				{{ collections|length }} recueil(s). Une citation « Bukhârî, n°13 » n'est plus une
+				chaîne : elle joint un recueil, un numéro, et — dès qu'elle est connue — une édition.
+			</p>
+		</div>
+
+		{% if collections is empty %}
+			<div class="empty" data-testid="no-collection">Aucun recueil enregistré.</div>
+		{% else %}
+			<ul class="cards" data-testid="collection-list">
+				{% for collection in collections %}
+					<li class="card">
+						<div class="band">
+							<span class="ref">{{ collection.editions|length }} édition(s)</span>
+							<span class="pb">{{ counts[collection.id] ?? 0 }} hadith(s)</span>
+						</div>
+						<div class="cbody">
+							<a class="gold-link" href="{{ path('admin_collection_show', {slug: collection.slug}) }}">
+								{{ collection.title }}
+							</a>
+							{% if collection.titleAr %}
+								<span class="ar" style="margin-left: 10px;" lang="ar" dir="rtl">{{ collection.titleAr }}</span>
+							{% endif %}
+
+							{% if collection.compiler %}
+								<div class="hint" style="margin-top: 4px;">
+									Compilé par {{ collection.compiler.displayName ?? collection.compiler.slug }}
+								</div>
+							{% endif %}
+
+							{% if collection.editions is empty %}
+								<div class="hint">Aucune édition identifiée — les numéros cités le sont sans édition connue.</div>
+							{% endif %}
+						</div>
+					</li>
+				{% endfor %}
+			</ul>
+		{% endif %}
+	</main>
+{% endblock %}

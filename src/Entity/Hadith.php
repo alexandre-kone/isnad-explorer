@@ -44,7 +44,10 @@ class Hadith implements CuratedEntity
     #[ORM\Column(type: 'text', nullable: true)]
     private ?string $textAr = null;
 
-    /** Référence canonique, ex. « Sahîh al-Bukhârî, n°1 ». */
+    /**
+     * Citation verbatim, ex. « Sahîh al-Bukhârî, n°1 ». Sa version structurée
+     * vit dans {@see HadithReference}, et c'est elle qu'il faut interroger.
+     */
     #[ORM\Column(length: 255)]
     private string $reference;
 
@@ -79,6 +82,11 @@ class Hadith implements CuratedEntity
     #[ORM\OneToMany(targetEntity: Transmission::class, mappedBy: 'hadith', cascade: ['persist'], orphanRemoval: true)]
     private Collection $transmissions;
 
+    /** @var Collection<int, HadithReference> */
+    #[ORM\OneToMany(targetEntity: HadithReference::class, mappedBy: 'hadith', cascade: ['persist'], orphanRemoval: true)]
+    #[ORM\OrderBy(['position' => 'ASC'])]
+    private Collection $references;
+
     public function __construct(string $slug, string $label, string $textFr, string $reference)
     {
         $this->slug = $slug;
@@ -87,6 +95,7 @@ class Hadith implements CuratedEntity
         $this->reference = $reference;
         $this->participants = new ArrayCollection();
         $this->transmissions = new ArrayCollection();
+        $this->references = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -208,6 +217,39 @@ class Hadith implements CuratedEntity
     public function getTransmissions(): Collection
     {
         return $this->transmissions;
+    }
+
+    /** @return Collection<int, HadithReference> */
+    public function getReferences(): Collection
+    {
+        return $this->references;
+    }
+
+    /**
+     * L'unicité `(hadith, recueil, numéro)` est tenue ici et pas seulement par
+     * l'index : PostgreSQL considère deux `NULL` comme distincts, or le numéro
+     * nul est un cas prévu — « recueil cité sans numéro ».
+     */
+    public function addReference(HadithReference $reference): self
+    {
+        foreach ($this->references as $existing) {
+            if ($existing === $reference) {
+                return $this;
+            }
+
+            if ($existing->getCollection() === $reference->getCollection()
+                && $existing->getNumber() === $reference->getNumber()) {
+                throw new \InvalidArgumentException(\sprintf(
+                    '« %s » est déjà référencé dans %s.',
+                    $this->slug,
+                    $reference->getCollection()->getTitle(),
+                ));
+            }
+        }
+
+        $this->references->add($reference);
+
+        return $this;
     }
 
     public function addParticipant(Person $person, int $level): HadithParticipant

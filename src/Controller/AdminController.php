@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Repository\CollectionRepository;
 use App\Repository\HadithRepository;
 use App\Repository\PersonRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -21,11 +22,15 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 final class AdminController extends AbstractController
 {
     #[Route('/admin', name: 'admin_home', methods: ['GET'])]
-    public function index(PersonRepository $people, HadithRepository $hadiths): Response
-    {
+    public function index(
+        PersonRepository $people,
+        HadithRepository $hadiths,
+        CollectionRepository $collections,
+    ): Response {
         return $this->render('admin/index.html.twig', [
             'personCount' => $people->count([]),
             'hadithCount' => $hadiths->count([]),
+            'collectionCount' => $collections->count([]),
         ]);
     }
 }

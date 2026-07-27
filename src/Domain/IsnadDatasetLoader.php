@@ -33,11 +33,12 @@ final class IsnadDatasetLoader
     public function __construct(
         private readonly string $datasetPath,
         private readonly PersonNameNormaliser $normaliser = new PersonNameNormaliser(),
+        private readonly BibliographyImporter $bibliography = new BibliographyImporter(),
     ) {
     }
 
     /**
-     * @return array{periods: int, people: int, hadiths: int, transmissions: int}
+     * @return array{periods: int, people: int, hadiths: int, transmissions: int, references: int}
      */
     public function load(EntityManagerInterface $em): array
     {
@@ -46,6 +47,7 @@ final class IsnadDatasetLoader
         $this->periods = [];
         $this->people = [];
         $transmissions = 0;
+        $references = 0;
 
         foreach ($data['periods'] as $id => $period) {
             $entity = new Period($id, $period['fr'], $period['ar'], $period['color'], $period['order']);
@@ -97,6 +99,8 @@ final class IsnadDatasetLoader
 
             $em->persist($hadith);
             ++$hadiths;
+
+            $references += \count($this->bibliography->import($em, $hadith));
         }
 
         $em->flush();
@@ -106,6 +110,7 @@ final class IsnadDatasetLoader
             'people' => \count($this->people),
             'hadiths' => $hadiths,
             'transmissions' => $transmissions,
+            'references' => $references,
         ];
     }
 
