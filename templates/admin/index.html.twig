@@ -23,12 +23,18 @@
 						<div class="fl">Hadiths</div>
 						<div class="fv">{{ hadithCount }}</div>
 					</div>
-					<p class="hint" style="margin-top: 14px;">
-						Les écrans de saisie arrivent avec la phase 1 (identité des personnes).
-					</p>
+					<div class="field">
+						<div class="fl">Recueils</div>
+						<div class="fv">{{ collectionCount }}</div>
+					</div>
 				</div>
 			</div>
 		</div>
+
+		<p style="margin-top: 20px;">
+			<a class="gold-link" href="{{ path('admin_person_index') }}">Transmetteurs →</a>
+			<a class="gold-link" style="margin-left: 18px;" href="{{ path('admin_collection_index') }}">Recueils →</a>
+		</p>
 
 		<p style="margin-top: 20px;">
 			<a class="gold-link" href="{{ path('admin_logout') }}">Se déconnecter</a>

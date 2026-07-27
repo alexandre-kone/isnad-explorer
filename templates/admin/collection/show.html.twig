@@ -1,0 +1,71 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ collection.title }} — curation{% endblock %}
+
+{% block body %}
+	<main class="page">
+		<div class="page-head">
+			<h2>{{ collection.title }}</h2>
+			<p>
+				{% if collection.compiler %}Compilé par {{ collection.compiler.displayName ?? collection.compiler.slug }}{% else %}Compilateur non renseigné{% endif %}
+				{% if collection.titleAr %} · <span class="ar" lang="ar" dir="rtl">{{ collection.titleAr }}</span>{% endif %}
+			</p>
+		</div>
+
+		<div class="card">
+			<div class="band">
+				<span class="ref">Éditions</span>
+				<span class="pb">{{ collection.editions|length }}</span>
+			</div>
+			<div class="cbody">
+				{% if collection.editions is empty %}
+					<p class="hint" data-testid="no-edition">
+						Aucune édition saisie. La numérotation des hadiths diffère d'une édition à
+						l'autre : tant qu'aucune n'est identifiée, « n°13 » désigne un numéro relevé
+						sans savoir où.
+					</p>
+				{% else %}
+					<ul class="name-list" data-testid="edition-list">
+						{% for edition in collection.editions %}
+							<li>
+								<span>{{ edition.fullLabel }}</span>
+								<span class="hint">
+									{{ edition.publisher ?? 'éditeur non renseigné' }}{{ edition.reference ? ' · numérotation de référence' }}
+								</span>
+							</li>
+						{% endfor %}
+					</ul>
+				{% endif %}
+			</div>
+		</div>
+
+		<div class="card" style="margin-top: 18px;">
+			<div class="band">
+				<span class="ref">Hadiths rapportés</span>
+				<span class="pb">{{ references|length }}</span>
+			</div>
+			<div class="cbody">
+				{% if references is empty %}
+					<p class="hint" data-testid="no-reference">Aucun hadith ne cite ce recueil.</p>
+				{% else %}
+					<ul class="name-list" data-testid="reference-list">
+						{% for reference in references %}
+							<li>
+								<span>{{ reference.hadith.label }}</span>
+								<span class="hint">
+									{% if reference.number %}n°{{ reference.number }}{% else %}numéro non relevé{% endif %}
+									{{ reference.primary ? ' · citation principale' }}
+									{% if reference.edition %} · {{ reference.edition.label }}{% endif %}
+								</span>
+							</li>
+						{% endfor %}
+					</ul>
+				{% endif %}
+			</div>
+		</div>
+
+		<p style="margin-top: 20px;">
+			<a class="gold-link" href="{{ path('admin_collection_index') }}">← Tous les recueils</a>
+		</p>
+	</main>
+{% endblock %}

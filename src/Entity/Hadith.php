@@ -44,7 +44,10 @@ class Hadith implements CuratedEntity
     #[ORM\Column(type: 'text', nullable: true)]
     private ?string $textAr = null;
 
-    /** Référence canonique, ex. « Sahîh al-Bukhârî, n°1 ». */
+    /**
+     * Citation verbatim, ex. « Sahîh al-Bukhârî, n°1 ». Sa version structurée
+     * vit dans {@see HadithReference}, et c'est elle qu'il faut interroger.
+     */
     #[ORM\Column(length: 255)]
     private string $reference;
 
@@ -79,6 +82,11 @@ class Hadith implements CuratedEntity
     #[ORM\OneToMany(targetEntity: Transmission::class, mappedBy: 'hadith', cascade: ['persist'], orphanRemoval: true)]
     private Collection $transmissions;
 
+    /** @var Collection<int, HadithReference> */
+    #[ORM\OneToMany(targetEntity: HadithReference::class, mappedBy: 'hadith', cascade: ['persist'], orphanRemoval: true)]
+    #[ORM\OrderBy(['position' => 'ASC'])]
+    private Collection $references;
+
     public function __construct(string $slug, string $label, string $textFr, string $reference)
     {
         $this->slug = $slug;
@@ -87,6 +95,7 @@ class Hadith implements CuratedEntity
         $this->reference = $reference;
         $this->participants = new ArrayCollection();
         $this->transmissions = new ArrayCollection();
+        $this->references = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -208,6 +217,21 @@ class Hadith implements CuratedEntity
     public function getTransmissions(): Collection
     {
         return $this->transmissions;
+    }
+
+    /** @return Collection<int, HadithReference> */
+    public function getReferences(): Collection
+    {
+        return $this->references;
+    }
+
+    public function addReference(HadithReference $reference): self
+    {
+        if (!$this->references->contains($reference)) {
+            $this->references->add($reference);
+        }
+
+        return $this;
     }
 
     public function addParticipant(Person $person, int $level): HadithParticipant
