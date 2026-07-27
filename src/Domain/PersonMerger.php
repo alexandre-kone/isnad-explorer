@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace App\Domain;
 
-use App\Entity\HadithParticipant;
 use App\Entity\Person;
 use App\Entity\PersonMergeLog;
+use App\Entity\Riwaya;
+use App\Entity\RiwayaParticipant;
 use App\Entity\Transmission;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
@@ -18,7 +19,7 @@ use Doctrine\ORM\EntityManagerInterface;
  * Si `A → C` et `B → C` existent et qu'on fusionne B dans A, le repointage
  * produit deux fois `A → C`, ce que la contrainte d'unicité de
  * {@see Transmission} refuse. Il faut donc fusionner les arêtes avant de
- * repointer. Même problème sur les participations à un hadith.
+ * repointer. Même problème sur les participations à une riwāya.
  */
 final class PersonMerger
 {
@@ -47,7 +48,7 @@ final class PersonMerger
             'names' => $absorbed->getNames()->count(),
             'participations' => \count($this->participationsOf($absorbed)),
             'transmissions' => \count($this->transmissionsOf($absorbed)),
-            'pivots' => \count($this->em->getRepository(\App\Entity\Hadith::class)->findBy(['pivot' => $absorbed])),
+            'pivots' => \count($this->em->getRepository(Riwaya::class)->findBy(['pivot' => $absorbed])),
             'collisions' => $collisions,
         ];
     }
@@ -121,24 +122,24 @@ final class PersonMerger
 
     private function mergeParticipations(Person $absorbed, Person $kept): void
     {
-        $keptByHadith = [];
+        $keptByRiwaya = [];
         foreach ($this->participationsOf($kept) as $participation) {
-            $keptByHadith[(int) $participation->getHadith()->getId()] = $participation;
+            $keptByRiwaya[(int) $participation->getRiwaya()->getId()] = $participation;
         }
 
         foreach ($this->participationsOf($absorbed) as $participation) {
-            $hadithId = (int) $participation->getHadith()->getId();
-            $rival = $keptByHadith[$hadithId] ?? null;
+            $riwayaId = (int) $participation->getRiwaya()->getId();
+            $rival = $keptByRiwaya[$riwayaId] ?? null;
 
             if (null === $rival) {
                 $participation->setPerson($kept);
-                $keptByHadith[$hadithId] = $participation;
+                $keptByRiwaya[$riwayaId] = $participation;
 
                 continue;
             }
 
-            // Les deux fiches participaient au même hadith : on garde le niveau
-            // le plus proche du Prophète ﷺ, et on jette le doublon.
+            // Les deux fiches participaient à la même riwāya : on garde le
+            // niveau le plus proche du Prophète ﷺ, et on jette le doublon.
             if ($participation->getLevel() < $rival->getLevel()) {
                 $rival->setLevel($participation->getLevel());
             }
@@ -178,8 +179,8 @@ final class PersonMerger
 
     private function repointPivots(Person $absorbed, Person $kept): void
     {
-        foreach ($this->em->getRepository(\App\Entity\Hadith::class)->findBy(['pivot' => $absorbed]) as $hadith) {
-            $hadith->setPivot($kept);
+        foreach ($this->em->getRepository(Riwaya::class)->findBy(['pivot' => $absorbed]) as $riwaya) {
+            $riwaya->setPivot($kept);
         }
     }
 
@@ -194,7 +195,7 @@ final class PersonMerger
         foreach ($this->transmissionsOf($person) as $transmission) {
             $keys[\sprintf(
                 '%d|%d|%d',
-                $transmission->getHadith()->getId(),
+                $transmission->getRiwaya()->getId(),
                 $transmission->getFrom()->getId(),
                 $transmission->getTo()->getId(),
             )] = $transmission;
@@ -211,15 +212,15 @@ final class PersonMerger
         $from = $transmission->getFrom()->getId() === $absorbed->getId() ? $kept : $transmission->getFrom();
         $to = $transmission->getTo()->getId() === $absorbed->getId() ? $kept : $transmission->getTo();
 
-        return \sprintf('%d|%d|%d', $transmission->getHadith()->getId(), $from->getId(), $to->getId());
+        return \sprintf('%d|%d|%d', $transmission->getRiwaya()->getId(), $from->getId(), $to->getId());
     }
 
     /**
-     * @return list<HadithParticipant>
+     * @return list<RiwayaParticipant>
      */
     private function participationsOf(Person $person): array
     {
-        return $this->em->getRepository(HadithParticipant::class)->findBy(['person' => $person]);
+        return $this->em->getRepository(RiwayaParticipant::class)->findBy(['person' => $person]);
     }
 
     /**

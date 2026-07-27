@@ -9,7 +9,7 @@ use App\Domain\ReferenceParser;
 use App\Entity\Collection;
 use App\Entity\User;
 use App\Repository\CollectionRepository;
-use App\Repository\HadithRepository;
+use App\Repository\RiwayaRepository;
 use App\Tests\PreparesHadithDatabase;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
@@ -76,18 +76,18 @@ final class CollectionControllerTest extends WebTestCase
     public function testEveryCitedSegmentBecameAStructuredReference(): void
     {
         $parser = new ReferenceParser();
-        $hadiths = static::getContainer()->get(HadithRepository::class)->findAll();
+        $riwayat = static::getContainer()->get(RiwayaRepository::class)->findAll();
 
-        self::assertNotEmpty($hadiths);
+        self::assertNotEmpty($riwayat);
 
-        foreach ($hadiths as $hadith) {
-            $expected = $parser->parse($hadith->getReference());
-            $actual = $hadith->getReferences();
+        foreach ($riwayat as $riwaya) {
+            $expected = $parser->parse($riwaya->getReference());
+            $actual = $riwaya->getReferences();
 
             self::assertCount(
                 \count($expected),
                 $actual,
-                \sprintf('« %s » : autant de références que de segments cités.', $hadith->getSlug()),
+                \sprintf('« %s » : autant de références que de segments cités.', $riwaya->getSlug()),
             );
 
             foreach ($expected as $position => $citation) {
@@ -103,10 +103,10 @@ final class CollectionControllerTest extends WebTestCase
     public function testImportingTheSameCorpusTwiceAddsNothing(): void
     {
         $importer = new BibliographyImporter();
-        $hadiths = static::getContainer()->get(HadithRepository::class)->findAll();
+        $riwayat = static::getContainer()->get(RiwayaRepository::class)->findAll();
 
-        foreach ($hadiths as $hadith) {
-            self::assertSame([], $importer->import($this->em, $hadith));
+        foreach ($riwayat as $riwaya) {
+            self::assertSame([], $importer->import($this->em, $riwaya));
         }
 
         $this->em->flush();

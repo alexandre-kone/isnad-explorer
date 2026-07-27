@@ -8,15 +8,15 @@ use App\Entity\Trait\Curated;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Participation d'une {@see Person} à un {@see Hadith} : ce qui varie d'un
- * hadith à l'autre pour un même transmetteur.
+ * Participation d'une {@see Person} à une {@see Riwaya} : ce qui varie d'une
+ * occurrence à l'autre pour un même transmetteur.
  *
  * Le niveau (0 = Prophète ﷺ) donne la strate verticale dans la vue Réseau.
  */
 #[ORM\Entity]
-#[ORM\Table(name: 'hadith_person')]
-#[ORM\UniqueConstraint(name: 'uniq_hadith_person', columns: ['hadith_id', 'person_id'])]
-class HadithParticipant implements CuratedEntity
+#[ORM\Table(name: 'riwaya_person')]
+#[ORM\UniqueConstraint(name: 'uniq_riwaya_person', columns: ['riwaya_id', 'person_id'])]
+class RiwayaParticipant implements CuratedEntity
 {
     use Curated;
 
@@ -25,9 +25,9 @@ class HadithParticipant implements CuratedEntity
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(targetEntity: Hadith::class, inversedBy: 'participants')]
+    #[ORM\ManyToOne(targetEntity: Riwaya::class, inversedBy: 'participants')]
     #[ORM\JoinColumn(nullable: false)]
-    private Hadith $hadith;
+    private Riwaya $riwaya;
 
     #[ORM\ManyToOne(targetEntity: Person::class)]
     #[ORM\JoinColumn(nullable: false)]
@@ -41,24 +41,24 @@ class HadithParticipant implements CuratedEntity
     private ?string $chains = null;
 
     /**
-     * Notice contextuelle : ce que cette personne fait dans CE hadith.
+     * Notice contextuelle : ce que cette personne fait dans CETTE occurrence.
      * Al-Bukhârî « place ce hadith en ouverture de son Sahîh » pour l'intention,
      * mais « dans le Livre de la foi » pour la fraternité. Écrase {@see Person::getBio()}.
      */
     #[ORM\Column(type: 'text', nullable: true)]
     private ?string $bio = null;
 
-    /** Référence de l'ouvrage pour ce hadith précis, ex. « Sahîh al-Bukhârî, n°13 ». */
+    /** Référence de l'ouvrage pour cette occurrence, ex. « Sahîh al-Bukhârî, n°13 ». */
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $work = null;
 
-    /** Lieu pertinent pour ce hadith, quand il diffère du rattachement habituel. */
+    /** Lieu pertinent ici, quand il diffère du rattachement habituel. */
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $region = null;
 
-    public function __construct(Hadith $hadith, Person $person, int $level)
+    public function __construct(Riwaya $riwaya, Person $person, int $level)
     {
-        $this->hadith = $hadith;
+        $this->riwaya = $riwaya;
         $this->person = $person;
         $this->level = $level;
     }
@@ -68,9 +68,9 @@ class HadithParticipant implements CuratedEntity
         return $this->id;
     }
 
-    public function getHadith(): Hadith
+    public function getRiwaya(): Riwaya
     {
-        return $this->hadith;
+        return $this->riwaya;
     }
 
     public function getPerson(): Person
@@ -130,7 +130,7 @@ class HadithParticipant implements CuratedEntity
         return $this;
     }
 
-    /** Notice du hadith si elle existe, sinon celle de la personne. */
+    /** Notice de l'occurrence si elle existe, sinon celle de la personne. */
     public function getBio(): ?string
     {
         return $this->bio ?? $this->person->getBio();

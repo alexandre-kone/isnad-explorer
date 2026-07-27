@@ -6,10 +6,11 @@ namespace App\Domain;
 
 use App\Entity\Enum\NameKind;
 use App\Entity\Enum\NameScript;
-use App\Entity\Hadith;
+use App\Entity\HadithCluster;
 use App\Entity\Period;
 use App\Entity\Person;
 use App\Entity\PersonName;
+use App\Entity\Riwaya;
 use Doctrine\ORM\EntityManagerInterface;
 
 /**
@@ -38,7 +39,7 @@ final class IsnadDatasetLoader
     }
 
     /**
-     * @return array{periods: int, people: int, hadiths: int, transmissions: int, references: int}
+     * @return array{periods: int, people: int, hadiths: int, riwayat: int, transmissions: int, references: int}
      */
     public function load(EntityManagerInterface $em): array
     {
@@ -63,33 +64,40 @@ final class IsnadDatasetLoader
                 continue;
             }
 
-            $hadith = new Hadith($slug, $raw['label'], $raw['fr'], $raw['ref']);
-            $hadith->setTextAr($raw['ar'] ?? null)
-                ->setGrade($raw['grade'] ?? null)
-                ->setTheme($raw['theme'] ?? null)
+            $cluster = new HadithCluster($slug, $raw['label']);
+            $cluster->setTheme($raw['theme'] ?? null)
                 ->setIntro($raw['intro'] ?? null)
                 ->setTuruq($raw['turuq'] ?? null)
                 ->setReady((bool) ($raw['ready'] ?? true));
 
+            // Le jeu de données décrit un texte et un graphe fusionnés par
+            // enseignement, sans distinguer les voies : il produit donc une
+            // riwāya unique. Le découpage en voies réelles est un geste de
+            // curation, pas une déduction d'import.
+            $riwaya = new Riwaya($cluster, $slug, $raw['fr'], $raw['ref']);
+            $riwaya->setTextAr($raw['ar'] ?? null)
+                ->setGrade($raw['grade'] ?? null);
+            $cluster->addRiwaya($riwaya);
+
             foreach ($raw['rawis'] as $personSlug => $rawi) {
                 $person = $this->person($em, $personSlug, $rawi);
-                $participant = $hadith->addParticipant($person, (int) $rawi['lvl']);
+                $participant = $riwaya->addParticipant($person, (int) $rawi['lvl']);
 
-                // bio / work / region varient d'un hadith à l'autre pour une
-                // même personne : ils sont portés par la participation.
+                // bio / work / region varient d'une occurrence à l'autre pour
+                // une même personne : ils sont portés par la participation.
                 $participant->setBio($rawi['bio'] ?? null)
                     ->setWork($rawi['work'] ?? null)
                     ->setRegion($rawi['region'] ?? null);
 
                 if ($rawi['pivot'] ?? false) {
-                    $hadith->setPivot($person);
+                    $riwaya->setPivot($person);
                     $participant->setChains($rawi['chains'] ?? null);
                 }
             }
 
             foreach ($raw['links'] as $link) {
                 [$from, $to] = $link;
-                $hadith->addTransmission(
+                $riwaya->addTransmission(
                     $this->people[$from],
                     $this->people[$to],
                     (bool) ($link[2] ?? false),
@@ -97,10 +105,11 @@ final class IsnadDatasetLoader
                 ++$transmissions;
             }
 
-            $em->persist($hadith);
+            $em->persist($cluster);
+            $em->persist($riwaya);
             ++$hadiths;
 
-            $references += \count($this->bibliography->import($em, $hadith));
+            $references += \count($this->bibliography->import($em, $riwaya));
         }
 
         $em->flush();
@@ -109,6 +118,7 @@ final class IsnadDatasetLoader
             'periods' => \count($this->periods),
             'people' => \count($this->people),
             'hadiths' => $hadiths,
+            'riwayat' => $hadiths,
             'transmissions' => $transmissions,
             'references' => $references,
         ];

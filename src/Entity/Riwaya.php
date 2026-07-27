@@ -5,22 +5,21 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use App\Entity\Trait\Curated;
-use App\Repository\HadithRepository;
+use App\Repository\RiwayaRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Un hadith : son texte, ses métadonnées, et le graphe de sa transmission
- * ({@see HadithParticipant} pour les nœuds, {@see Transmission} pour les arêtes).
+ * L'unité réelle de la science du hadith : un isnad, un matn, une citation.
  *
- * L'isnad n'est plus une chaîne linéaire : au-delà du pivot (مدار) il s'évente
- * en plusieurs voies (turuq). Le segment où la chaîne reste unique est l'épine
- * gharîb, exposée par {@see getSpine()}.
+ * Un même enseignement circule par plusieurs voies (turuq), et chaque voie a sa
+ * propre variante de texte. C'est ici que vivent le texte et la chaîne ; le
+ * {@see HadithCluster} au-dessus ne porte que le jugement d'équivalence.
  */
-#[ORM\Entity(repositoryClass: HadithRepository::class)]
-#[ORM\Table(name: 'hadith')]
-class Hadith implements CuratedEntity
+#[ORM\Entity(repositoryClass: RiwayaRepository::class)]
+#[ORM\Table(name: 'riwaya')]
+class Riwaya implements CuratedEntity
 {
     use Curated;
 
@@ -29,13 +28,12 @@ class Hadith implements CuratedEntity
     #[ORM\Column]
     private ?int $id = null;
 
-    /** Clé stable, ex. « intention ». */
+    #[ORM\ManyToOne(targetEntity: HadithCluster::class, inversedBy: 'riwayat')]
+    #[ORM\JoinColumn(nullable: false)]
+    private HadithCluster $cluster;
+
     #[ORM\Column(length: 64, unique: true)]
     private string $slug;
-
-    /** Titre court, ex. « Hadith de l'intention ». */
-    #[ORM\Column(length: 255)]
-    private string $label;
 
     /** Texte français (matn traduit). */
     #[ORM\Column(type: 'text')]
@@ -46,51 +44,40 @@ class Hadith implements CuratedEntity
 
     /**
      * Citation verbatim, ex. « Sahîh al-Bukhârî, n°1 ». Sa version structurée
-     * vit dans {@see HadithReference}, et c'est elle qu'il faut interroger.
+     * vit dans {@see RiwayaReference}, et c'est elle qu'il faut interroger.
      */
     #[ORM\Column(length: 255)]
     private string $reference;
 
-    /** Grade de fiabilité, ex. « Sahîh ». */
+    /**
+     * Grade de fiabilité, ex. « Sahîh ». Il porte sur cette voie : deux voies
+     * du même enseignement ne se valent pas nécessairement.
+     */
     #[ORM\Column(length: 64, nullable: true)]
     private ?string $grade = null;
-
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $theme = null;
-
-    #[ORM\Column(type: 'text', nullable: true)]
-    private ?string $intro = null;
-
-    /** Libellé du nombre de voies, ex. « 6 voies (turuq) ». */
-    #[ORM\Column(length: 64, nullable: true)]
-    private ?string $turuq = null;
 
     /** Le مدار : narrateur sur lequel toutes les voies convergent. */
     #[ORM\ManyToOne(targetEntity: Person::class)]
     private ?Person $pivot = null;
 
-    /** Un hadith non prêt est listé mais pas explorable. */
-    #[ORM\Column]
-    private bool $ready = true;
-
-    /** @var Collection<int, HadithParticipant> */
-    #[ORM\OneToMany(targetEntity: HadithParticipant::class, mappedBy: 'hadith', cascade: ['persist'], orphanRemoval: true)]
+    /** @var Collection<int, RiwayaParticipant> */
+    #[ORM\OneToMany(targetEntity: RiwayaParticipant::class, mappedBy: 'riwaya', cascade: ['persist'], orphanRemoval: true)]
     #[ORM\OrderBy(['level' => 'ASC'])]
     private Collection $participants;
 
     /** @var Collection<int, Transmission> */
-    #[ORM\OneToMany(targetEntity: Transmission::class, mappedBy: 'hadith', cascade: ['persist'], orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: Transmission::class, mappedBy: 'riwaya', cascade: ['persist'], orphanRemoval: true)]
     private Collection $transmissions;
 
-    /** @var Collection<int, HadithReference> */
-    #[ORM\OneToMany(targetEntity: HadithReference::class, mappedBy: 'hadith', cascade: ['persist'], orphanRemoval: true)]
+    /** @var Collection<int, RiwayaReference> */
+    #[ORM\OneToMany(targetEntity: RiwayaReference::class, mappedBy: 'riwaya', cascade: ['persist'], orphanRemoval: true)]
     #[ORM\OrderBy(['position' => 'ASC'])]
     private Collection $references;
 
-    public function __construct(string $slug, string $label, string $textFr, string $reference)
+    public function __construct(HadithCluster $cluster, string $slug, string $textFr, string $reference)
     {
+        $this->cluster = $cluster;
         $this->slug = $slug;
-        $this->label = $label;
         $this->textFr = $textFr;
         $this->reference = $reference;
         $this->participants = new ArrayCollection();
@@ -103,14 +90,14 @@ class Hadith implements CuratedEntity
         return $this->id;
     }
 
+    public function getCluster(): HadithCluster
+    {
+        return $this->cluster;
+    }
+
     public function getSlug(): string
     {
         return $this->slug;
-    }
-
-    public function getLabel(): string
-    {
-        return $this->label;
     }
 
     public function getTextFr(): string
@@ -147,42 +134,6 @@ class Hadith implements CuratedEntity
         return $this;
     }
 
-    public function getTheme(): ?string
-    {
-        return $this->theme;
-    }
-
-    public function setTheme(?string $theme): self
-    {
-        $this->theme = $theme;
-
-        return $this;
-    }
-
-    public function getIntro(): ?string
-    {
-        return $this->intro;
-    }
-
-    public function setIntro(?string $intro): self
-    {
-        $this->intro = $intro;
-
-        return $this;
-    }
-
-    public function getTuruq(): ?string
-    {
-        return $this->turuq;
-    }
-
-    public function setTuruq(?string $turuq): self
-    {
-        $this->turuq = $turuq;
-
-        return $this;
-    }
-
     public function getPivot(): ?Person
     {
         return $this->pivot;
@@ -195,19 +146,7 @@ class Hadith implements CuratedEntity
         return $this;
     }
 
-    public function isReady(): bool
-    {
-        return $this->ready;
-    }
-
-    public function setReady(bool $ready): self
-    {
-        $this->ready = $ready;
-
-        return $this;
-    }
-
-    /** @return Collection<int, HadithParticipant> */
+    /** @return Collection<int, RiwayaParticipant> */
     public function getParticipants(): Collection
     {
         return $this->participants;
@@ -219,18 +158,33 @@ class Hadith implements CuratedEntity
         return $this->transmissions;
     }
 
-    /** @return Collection<int, HadithReference> */
+    /** @return Collection<int, RiwayaReference> */
     public function getReferences(): Collection
     {
         return $this->references;
     }
 
+    public function addParticipant(Person $person, int $level): RiwayaParticipant
+    {
+        $participant = new RiwayaParticipant($this, $person, $level);
+        $this->participants->add($participant);
+
+        return $participant;
+    }
+
+    public function addTransmission(Person $from, Person $to, bool $spine = false): self
+    {
+        $this->transmissions->add(new Transmission($this, $from, $to, $spine));
+
+        return $this;
+    }
+
     /**
-     * L'unicité `(hadith, recueil, numéro)` est tenue ici et pas seulement par
+     * L'unicité `(riwāya, recueil, numéro)` est tenue ici et pas seulement par
      * l'index : PostgreSQL considère deux `NULL` comme distincts, or le numéro
      * nul est un cas prévu — « recueil cité sans numéro ».
      */
-    public function addReference(HadithReference $reference): self
+    public function addReference(RiwayaReference $reference): self
     {
         foreach ($this->references as $existing) {
             if ($existing === $reference) {
@@ -240,7 +194,7 @@ class Hadith implements CuratedEntity
             if ($existing->getCollection() === $reference->getCollection()
                 && $existing->getNumber() === $reference->getNumber()) {
                 throw new \InvalidArgumentException(\sprintf(
-                    '« %s » est déjà référencé dans %s.',
+                    '« %s » est déjà référencée dans %s.',
                     $this->slug,
                     $reference->getCollection()->getTitle(),
                 ));
@@ -248,21 +202,6 @@ class Hadith implements CuratedEntity
         }
 
         $this->references->add($reference);
-
-        return $this;
-    }
-
-    public function addParticipant(Person $person, int $level): HadithParticipant
-    {
-        $participant = new HadithParticipant($this, $person, $level);
-        $this->participants->add($participant);
-
-        return $participant;
-    }
-
-    public function addTransmission(Person $from, Person $to, bool $spine = false): self
-    {
-        $this->transmissions->add(new Transmission($this, $from, $to, $spine));
 
         return $this;
     }

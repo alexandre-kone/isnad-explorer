@@ -51,7 +51,7 @@
 					<ul class="name-list" data-testid="reference-list">
 						{% for reference in references %}
 							<li>
-								<span>{{ reference.hadith.label }}</span>
+								<span>{{ reference.riwaya.cluster.label }}</span>
 								<span class="hint">
 									{% if reference.number %}n°{{ reference.number }}{% else %}numéro non relevé{% endif %}
 									{{ reference.primary ? ' · citation principale' }}

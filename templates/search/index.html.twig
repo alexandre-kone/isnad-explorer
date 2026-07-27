@@ -25,16 +25,16 @@
 			</p>
 
 			<ul class="cards">
-				{% for hadith in results %}
-					{% set spine = hadith.spine %}
+				{% for riwaya in results %}
+					{% set spine = riwaya.spine %}
 					<li class="card">
 						<div class="band">
-							<span class="ref">{{ hadith.reference }}</span>
-							{% if hadith.grade %}<span class="pb">{{ hadith.grade }}</span>{% endif %}
+							<span class="ref">{{ riwaya.reference }}</span>
+							{% if riwaya.grade %}<span class="pb">{{ riwaya.grade }}</span>{% endif %}
 						</div>
 						<div class="cbody">
-							<blockquote>{{ hadith.textFr }}</blockquote>
-							{% if hadith.textAr %}<p class="ar matn-ar">{{ hadith.textAr }}</p>{% endif %}
+							<blockquote>{{ riwaya.textFr }}</blockquote>
+							{% if riwaya.textAr %}<p class="ar matn-ar">{{ riwaya.textAr }}</p>{% endif %}
 
 							{% if spine %}
 								<div class="field">
@@ -43,7 +43,7 @@
 									<ol class="isnad">
 										{% for person in spine %}
 											<li>
-												<span class="chip {{ loop.first ? 'first' }}{{ hadith.pivot and person.slug == hadith.pivot.slug ? 'pivot' }}">{{ person.displayName }}</span>
+												<span class="chip {{ loop.first ? 'first' }}{{ riwaya.pivot and person.slug == riwaya.pivot.slug ? 'pivot' }}">{{ person.displayName }}</span>
 												{% if not loop.last %}<span class="arrow" aria-hidden="true">→</span>{% endif %}
 											</li>
 										{% endfor %}
@@ -51,9 +51,9 @@
 								</div>
 							{% endif %}
 
-							{% if hadith.turuq %}
+							{% if riwaya.cluster.turuq %}
 								<p class="hint" style="margin-top: 10px;">
-									Puis l'isnad s'évente : {{ hadith.turuq }} — {{ hadith.participants|length }} transmetteurs au total.
+									Puis l'isnad s'évente : {{ riwaya.cluster.turuq }} — {{ riwaya.participants|length }} transmetteurs au total.
 								</p>
 							{% endif %}
 						</div>

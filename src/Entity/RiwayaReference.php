@@ -5,24 +5,24 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use App\Entity\Trait\Curated;
-use App\Repository\HadithReferenceRepository;
+use App\Repository\RiwayaReferenceRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * « Ce hadith se trouve dans ce recueil, sous ce numéro. »
+ * « Cette riwāya se trouve dans ce recueil, sous ce numéro. »
  *
- * C'est la ligne qui remplace la chaîne composite `Hadith.reference` : un hadith
- * en a autant que de recueils qui le rapportent, et chacune est joignable.
+ * C'est la ligne qui remplace la chaîne composite `Riwaya.reference` : une riwāya
+ * en a autant que de recueils qui la rapportent, et chacune est joignable.
  *
  * L'édition est nullable, contrairement au modèle cible qui la voulait
  * obligatoire : les références héritées ne disent pas dans quelle édition le
  * numéro a été relevé, et fabriquer une édition pour satisfaire une contrainte
  * inventerait une information que personne n'a établie.
  */
-#[ORM\Entity(repositoryClass: HadithReferenceRepository::class)]
-#[ORM\Table(name: 'hadith_reference')]
-#[ORM\UniqueConstraint(name: 'uniq_hadith_reference', columns: ['hadith_id', 'collection_id', 'number'])]
-class HadithReference implements CuratedEntity
+#[ORM\Entity(repositoryClass: RiwayaReferenceRepository::class)]
+#[ORM\Table(name: 'riwaya_reference')]
+#[ORM\UniqueConstraint(name: 'uniq_riwaya_reference', columns: ['riwaya_id', 'collection_id', 'number'])]
+class RiwayaReference implements CuratedEntity
 {
     use Curated;
 
@@ -31,9 +31,9 @@ class HadithReference implements CuratedEntity
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(targetEntity: Hadith::class, inversedBy: 'references')]
+    #[ORM\ManyToOne(targetEntity: Riwaya::class, inversedBy: 'references')]
     #[ORM\JoinColumn(nullable: false)]
-    private Hadith $hadith;
+    private Riwaya $riwaya;
 
     #[ORM\ManyToOne(targetEntity: Collection::class)]
     #[ORM\JoinColumn(nullable: false)]
@@ -54,9 +54,9 @@ class HadithReference implements CuratedEntity
     #[ORM\Column]
     private int $position = 0;
 
-    public function __construct(Hadith $hadith, Collection $collection, ?string $number = null)
+    public function __construct(Riwaya $riwaya, Collection $collection, ?string $number = null)
     {
-        $this->hadith = $hadith;
+        $this->riwaya = $riwaya;
         $this->collection = $collection;
         $this->number = $number;
     }
@@ -66,9 +66,9 @@ class HadithReference implements CuratedEntity
         return $this->id;
     }
 
-    public function getHadith(): Hadith
+    public function getRiwaya(): Riwaya
     {
-        return $this->hadith;
+        return $this->riwaya;
     }
 
     public function getCollection(): Collection

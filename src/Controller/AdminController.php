@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Repository\CollectionRepository;
-use App\Repository\HadithRepository;
+use App\Repository\HadithClusterRepository;
 use App\Repository\PersonRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -24,12 +24,12 @@ final class AdminController extends AbstractController
     #[Route('/admin', name: 'admin_home', methods: ['GET'])]
     public function index(
         PersonRepository $people,
-        HadithRepository $hadiths,
+        HadithClusterRepository $clusters,
         CollectionRepository $collections,
     ): Response {
         return $this->render('admin/index.html.twig', [
             'personCount' => $people->count([]),
-            'hadithCount' => $hadiths->count([]),
+            'hadithCount' => $clusters->count([]),
             'collectionCount' => $collections->count([]),
         ]);
     }

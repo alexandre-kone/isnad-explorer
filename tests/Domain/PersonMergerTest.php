@@ -8,7 +8,8 @@ use App\Domain\PersonMerger;
 use App\Domain\PersonNameNormaliser;
 use App\Entity\Enum\NameKind;
 use App\Entity\Enum\NameScript;
-use App\Entity\Hadith;
+use App\Entity\HadithCluster;
+use App\Entity\Riwaya;
 use App\Entity\Person;
 use App\Entity\PersonMergeLog;
 use App\Entity\PersonName;
@@ -44,12 +45,12 @@ final class PersonMergerTest extends KernelTestCase
      */
     public function testCollidingEdgesAreMergedNotDuplicated(): void
     {
-        [$hadith, $a, $b, $c] = $this->scenarioWithCollision();
+        [$riwaya, $a, $b, $c] = $this->scenarioWithCollision();
 
         static::getContainer()->get(PersonMerger::class)->merge($b, $a, null);
         $this->em->clear();
 
-        $edges = $this->em->getRepository(Transmission::class)->findBy(['hadith' => $hadith->getId()]);
+        $edges = $this->em->getRepository(Transmission::class)->findBy(['riwaya' => $riwaya->getId()]);
 
         self::assertCount(1, $edges, 'Les deux arêtes vers C doivent avoir fusionné.');
         self::assertSame($a->getId(), $edges[0]->getFrom()->getId());
@@ -110,11 +111,11 @@ final class PersonMergerTest extends KernelTestCase
 
     public function testPreviewReportsImpactWithoutChangingAnything(): void
     {
-        [$hadith, $a, $b] = $this->scenarioWithCollision();
+        [$riwaya, $a, $b] = $this->scenarioWithCollision();
 
-        $before = \count($this->em->getRepository(Transmission::class)->findBy(['hadith' => $hadith->getId()]));
+        $before = \count($this->em->getRepository(Transmission::class)->findBy(['riwaya' => $riwaya->getId()]));
         $impact = static::getContainer()->get(PersonMerger::class)->preview($b, $a);
-        $after = \count($this->em->getRepository(Transmission::class)->findBy(['hadith' => $hadith->getId()]));
+        $after = \count($this->em->getRepository(Transmission::class)->findBy(['riwaya' => $riwaya->getId()]));
 
         self::assertSame($before, $after, 'L\'aperçu ne doit rien modifier.');
         self::assertSame(1, $impact['transmissions']);
@@ -131,9 +132,9 @@ final class PersonMergerTest extends KernelTestCase
 
     /**
      * Construit un cas contrôlé : deux fiches distinctes transmettant au même
-     * élève, dans le même hadith.
+     * élève, dans la même riwāya.
      *
-     * @return array{Hadith, Person, Person, Person}
+     * @return array{Riwaya, Person, Person, Person}
      */
     private function scenarioWithCollision(): array
     {
@@ -143,17 +144,20 @@ final class PersonMergerTest extends KernelTestCase
         $b = $this->person('fusion-b', 'Forme de B', $period);
         $c = $this->person('fusion-c', 'Forme de C', $period);
 
-        $hadith = new Hadith('fusion-test', 'Hadith de test', 'Texte', 'Réf. de test');
-        $hadith->addParticipant($a, 1);
-        $hadith->addParticipant($b, 1);
-        $hadith->addParticipant($c, 2);
-        $hadith->addTransmission($a, $c, false);
-        $hadith->addTransmission($b, $c, true); // celle-ci porte l'épine
+        $cluster = new HadithCluster('fusion-test', 'Hadith de test');
+        $riwaya = new Riwaya($cluster, 'fusion-test', 'Texte', 'Réf. de test');
+        $cluster->addRiwaya($riwaya);
+        $riwaya->addParticipant($a, 1);
+        $riwaya->addParticipant($b, 1);
+        $riwaya->addParticipant($c, 2);
+        $riwaya->addTransmission($a, $c, false);
+        $riwaya->addTransmission($b, $c, true); // celle-ci porte l'épine
 
-        $this->em->persist($hadith);
+        $this->em->persist($cluster);
+        $this->em->persist($riwaya);
         $this->em->flush();
 
-        return [$hadith, $a, $b, $c];
+        return [$riwaya, $a, $b, $c];
     }
 
     private function person(string $slug, string $form, \App\Entity\Period $period): Person

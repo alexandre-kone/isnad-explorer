@@ -5,15 +5,15 @@ declare(strict_types=1);
 namespace App\Domain;
 
 use App\Entity\Collection;
-use App\Entity\Hadith;
-use App\Entity\HadithReference;
+use App\Entity\Riwaya;
+use App\Entity\RiwayaReference;
 use Doctrine\ORM\EntityManagerInterface;
 
 /**
- * Transforme la référence composite d'un hadith en références structurées.
+ * Transforme la référence composite d'une riwāya en références structurées.
  *
  * Les recueils sont dédupliqués sur toute la durée d'un import : « Sahîh
- * al-Bukhârî » cité par quatre hadiths ne donne qu'une ligne `collection`.
+ * al-Bukhârî » cité par quatre riwāyāt ne donne qu'une ligne `collection`.
  */
 final class BibliographyImporter
 {
@@ -30,24 +30,24 @@ final class BibliographyImporter
      * Les entités créées sont persistées mais pas flushées, l'appelant décide
      * du moment de l'écriture.
      *
-     * @return list<HadithReference>
+     * @return list<RiwayaReference>
      */
-    public function import(EntityManagerInterface $em, Hadith $hadith): array
+    public function import(EntityManagerInterface $em, Riwaya $riwaya): array
     {
         $created = [];
 
-        foreach ($this->parser->parse($hadith->getReference()) as $position => $citation) {
+        foreach ($this->parser->parse($riwaya->getReference()) as $position => $citation) {
             $collection = $this->collection($em, $citation);
 
-            if ($this->alreadyReferenced($hadith, $collection, $citation->number)) {
+            if ($this->alreadyReferenced($riwaya, $collection, $citation->number)) {
                 continue;
             }
 
-            $reference = new HadithReference($hadith, $collection, $citation->number);
+            $reference = new RiwayaReference($riwaya, $collection, $citation->number);
             $reference->setPosition($position)
-                ->setPrimary(0 === $position && $hadith->getReferences()->isEmpty());
+                ->setPrimary(0 === $position && $riwaya->getReferences()->isEmpty());
 
-            $hadith->addReference($reference);
+            $riwaya->addReference($reference);
             $em->persist($reference);
             $created[] = $reference;
         }
@@ -55,9 +55,9 @@ final class BibliographyImporter
         return $created;
     }
 
-    private function alreadyReferenced(Hadith $hadith, Collection $collection, ?string $number): bool
+    private function alreadyReferenced(Riwaya $riwaya, Collection $collection, ?string $number): bool
     {
-        foreach ($hadith->getReferences() as $reference) {
+        foreach ($riwaya->getReferences() as $reference) {
             if ($reference->getCollection() === $collection && $reference->getNumber() === $number) {
                 return true;
             }
